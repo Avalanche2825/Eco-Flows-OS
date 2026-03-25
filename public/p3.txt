@@ -1,0 +1,116 @@
+
+<!-- GREENGRID -->
+<section id="greengrid">
+<div class="con">
+  <div class="sec-h"><h2>🏆 GreenGrid Optimizer</h2><p>Compete, challenge, and earn with your community</p></div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="ggTab('lb',this)">🏆 Leaderboard</button>
+    <button class="tab-btn" onclick="ggTab('ch',this)">⚔️ Challenges</button>
+    <button class="tab-btn" onclick="ggTab('ba',this)">🎖️ Badges</button>
+    <button class="tab-btn" onclick="ggTab('es',this)">📊 Eco Score</button>
+  </div>
+  <div id="gg-lb">
+    <div class="grid2">
+      <div class="card"><div class="title">👤 Individual Rankings</div><div id="lb-list"></div></div>
+      <div class="card"><div class="title">📊 Score Overview</div>
+        <div style="text-align:center;padding:1rem 0"><div style="font-size:4.5rem;font-weight:700;color:var(--green);line-height:1">78</div><div style="font-size:.73rem;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:1px">Your Eco Score · March 2026</div><div style="font-size:.78rem;color:var(--text2);margin-top:8px">Rank <strong style="color:var(--green)">#7</strong> of 2,840 users in Jaipur</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:1rem">
+          <div class="card" style="padding:.8rem"><div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;margin-bottom:6px"><span>☀️ Solar</span><span style="color:var(--amber)">88/100</span></div><div class="pb"><div class="pf" style="width:88%;background:var(--amber)"></div></div></div>
+          <div class="card" style="padding:.8rem"><div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;margin-bottom:6px"><span>💧 Water</span><span style="color:var(--teal)">74/100</span></div><div class="pb"><div class="pf" style="width:74%;background:var(--teal)"></div></div></div>
+          <div class="card" style="padding:.8rem"><div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;margin-bottom:6px"><span>🌱 Carbon</span><span style="color:var(--coral)">80/100</span></div><div class="pb"><div class="pf" style="width:80%;background:var(--coral)"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="gg-ch" style="display:none"><div id="ch-list"></div></div>
+  <div id="gg-ba" style="display:none"><div class="grid3" id="ba-grid"></div></div>
+  <div id="gg-es" style="display:none">
+    <div class="grid2"><div class="card"><div class="title">Eco Score Radar</div><canvas id="radarChart" height="280"></canvas></div>
+      <div class="card"><canvas id="barChart" height="280"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ECO STORE -->
+<section id="ecostore">
+<div class="con">
+  <div class="sec-h"><h2>🛒 Eco Store</h2><p>Redeem eco-points for sustainable products — up to 50% off</p></div>
+  <div style="display:grid;grid-template-columns:1fr 240px;gap:18px">
+    <div>
+      <input type="text" id="s-search" placeholder="🔍  Search products..." oninput="renderProds()" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:.88rem;width:100%;margin-bottom:.8rem"/>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.2rem" id="f-row">
+        <button class="tab-btn active" onclick="setF('all',this)">All</button>
+        <button class="tab-btn" onclick="setF('solar',this)">🌞 Solar</button>
+        <button class="tab-btn" onclick="setF('water',this)">💧 Water</button>
+        <button class="tab-btn" onclick="setF('energy',this)">⚡ Energy</button>
+        <button class="tab-btn" onclick="setF('general',this)">🌱 General</button>
+      </div>
+      <div class="grid3" id="prod-grid"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="background:linear-gradient(135deg,rgba(74,200,80,.12),rgba(38,212,180,.07));border:1px solid var(--border2);border-radius:var(--rl);padding:1.3rem">
+        <div style="font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-weight:600">Your Balance</div>
+        <div style="font-size:2.3rem;font-weight:700;color:var(--green)">2,840</div>
+        <div style="font-size:.75rem;color:var(--text2);margin-top:3px">eco points · 1 pt = ₹0.10 off</div>
+        <hr style="border-color:rgba(74,200,80,.2);margin:.9rem 0"/>
+        <div style="font-size:.74rem;color:var(--text2);line-height:1.7">Max discount: <strong style="color:var(--green)">50%</strong><br/>Points value: <strong style="color:var(--green)">₹284</strong> available</div>
+      </div>
+      <div class="card" style="padding:.9rem">
+        <div style="font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;font-weight:600">Your Token</div>
+        <div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--text2);word-break:break-all;margin-top:5px">EF-28400X-RJ-2024-A7K9M</div>
+      </div>
+      <div class="card" style="padding:.9rem">
+        <div style="font-size:.78rem;font-weight:700;margin-bottom:8px">💡 Earn Points</div>
+        <div style="font-size:.73rem;color:var(--text2);line-height:1.9">💧 100L saved → +10 pts<br/>⚡ 10 kWh saved → +5 pts<br/>☀️ 100 kWh solar → +15 pts<br/>⚔️ Challenge done → +50–750 pts<br/>📅 Daily check-in → +5 pts</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- AI ECO BOT -->
+<section id="aiecobot">
+<div class="con" style="max-width:900px">
+  <div class="sec-h"><h2>🤖 AI Eco Bot</h2><p>Your personal sustainability assistant</p></div>
+  <div style="height:520px;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">
+    <div style="padding:.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg3)">
+      <div style="width:34px;height:34px;background:linear-gradient(135deg,var(--green),var(--teal));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px">🌿</div>
+      <div><div style="font-weight:700;font-size:.88rem">EcoBot AI</div><div style="font-size:.7rem;color:var(--green)">● Online · Sustainability Expert</div></div>
+    </div>
+    <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.1rem;display:flex;flex-direction:column;gap:12px"></div>
+    <div style="display:flex;gap:7px;padding:0 1.1rem .7rem;flex-wrap:wrap">
+      <button onclick="qSend('How can I reduce my electricity bill?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">⚡ Reduce energy bill</button>
+      <button onclick="qSend('When is the best time to run appliances?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">🕐 Appliance timing</button>
+      <button onclick="qSend('Calculate my solar panel ROI')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">☀️ Solar ROI</button>
+      <button onclick="qSend('How can I save more water?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">💧 Save water</button>
+      <button onclick="qSend('What eco points can I earn today?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">🏆 Earn points</button>
+    </div>
+    <div style="display:flex;gap:9px;padding:.9rem 1.1rem;border-top:1px solid var(--border);background:var(--bg3)">
+      <input type="text" id="chat-in" placeholder="Ask me anything about sustainability..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text);font-family:inherit;font-size:.86rem" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+      <button onclick="sendChat()" style="background:var(--green);color:#0a0e0a;border:none;border-radius:10px;padding:0 15px;cursor:pointer;font-size:1rem;transition:all .2s">➤</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <button class="mc" onclick="closeModal()">✕</button>
+    <div style="font-size:1rem;font-weight:700;margin-bottom:1rem" id="m-name">Product</div>
+    <div class="fg"><label class="fl">Quantity</label><input type="number" class="fi" id="m-qty" value="1" min="1" oninput="updModal()"/></div>
+    <div style="margin:1rem 0">
+      <div style="display:flex;justify-content:space-between;font-size:.76rem;color:var(--text2);margin-bottom:5px"><span>Eco Points to Use</span><span id="m-pv">0 pts</span></div>
+      <input type="range" id="m-pts" min="0" max="2840" value="0" style="width:100%;accent-color:var(--green)" oninput="updModal()"/>
+    </div>
+    <div style="background:var(--bg3);border-radius:10px;padding:.9rem;font-size:.83rem;display:flex;flex-direction:column;gap:5px">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Original</span><span id="m-orig">—</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Discount</span><span id="m-disc" style="color:var(--green)">—</span></div>
+      <hr style="border-color:var(--border);margin:3px 0"/>
+      <div style="display:flex;justify-content:space-between"><span style="font-weight:700;color:var(--green)">Final</span><span style="font-weight:700;color:var(--green)" id="m-fin">—</span></div>
+    </div>
+    <button onclick="confirmBuy()" style="width:100%;background:linear-gradient(135deg,var(--green),var(--teal));color:#0a0e0a;border:none;border-radius:10px;padding:12px;font-family:inherit;font-size:.93rem;font-weight:700;cursor:pointer;margin-top:12px">✓ Confirm Purchase</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>

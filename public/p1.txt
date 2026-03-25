@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EcoFlows OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0a0e0a;--bg2:#111611;--bg3:#171e17;--bg4:#1e271e;--card:#141c14;--border:rgba(74,200,80,0.15);--border2:rgba(74,200,80,0.25);--green:#4ac850;--teal:#26d4b4;--blue:#4a9eff;--amber:#f5a623;--coral:#ff6b6b;--text:#e8f5e9;--text2:#8fbc92;--text3:#4a7a4e;--glow:rgba(74,200,80,0.08);--r:12px;--rl:18px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(74,200,80,0.06),transparent 70%);pointer-events:none;z-index:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,10,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.ni{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;height:60px;padding:0 1.5rem}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:1.05rem;color:var(--green);text-decoration:none;flex-shrink:0}
+.logo-i{width:28px;height:28px;background:linear-gradient(135deg,var(--green),var(--teal));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.nl{display:flex;gap:2px;flex:1;overflow:hidden}
+.nl button{background:none;border:none;color:var(--text2);font-family:inherit;font-size:.82rem;padding:6px 11px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;font-weight:500}
+.nl button:hover{color:var(--text);background:var(--glow)}
+.nl button.active{color:var(--green);background:rgba(74,200,80,0.1)}
+.nr{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.badge{background:rgba(74,200,80,0.12);border:1px solid var(--border2);border-radius:20px;padding:4px 12px;font-size:.78rem;color:var(--green);font-weight:600;display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.btn-p{background:var(--green);color:#0a0e0a;border:none;border-radius:8px;padding:7px 14px;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-p:hover{background:#5cd662;transform:translateY(-1px)}
+section{display:none;min-height:calc(100vh - 60px);margin-top:60px;position:relative;z-index:1}
+section.active{display:block}
+.con{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:1.4rem}
+.title{font-size:1.1rem;font-weight:700;margin-bottom:1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:800px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.nl{display:none}}
+@media(max-width:550px){.grid3{grid-template-columns:1fr 1fr}}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.fl{font-size:.75rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.fi{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 13px;color:var(--text);font-family:inherit;font-size:.88rem}
+.fi:focus{outline:none;border-color:var(--green)}
+.sec-h{margin-bottom:1.5rem}
+.sec-h h2{font-size:1.7rem;font-weight:700;letter-spacing:-.5px}
+.sec-h p{color:var(--text2);margin-top:5px;font-size:.88rem}
+.ab-btn{width:100%;background:linear-gradient(135deg,var(--green),var(--teal));color:#0a0e0a;border:none;border-radius:10px;padding:12px;font-family:inherit;font-size:.93rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:6px}
+.ab-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,200,80,.3)}
+.hr{border:none;border-top:1px solid var(--border);margin:1.4rem 0}
+.tab-bar{display:flex;gap:6px;margin-bottom:1.4rem;border-bottom:1px solid var(--border);padding-bottom:10px;flex-wrap:wrap}
+.tab-btn{background:none;border:none;color:var(--text2);font-family:inherit;font-size:.83rem;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s}
+.tab-btn.active{background:rgba(74,200,80,0.12);color:var(--green)}
+.pb{background:var(--bg3);border-radius:4px;height:5px;overflow:hidden;margin:8px 0}
+.pf{height:100%;border-radius:4px;transition:width 1s ease}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--green);border-radius:10px;padding:11px 16px;font-size:.84rem;z-index:300;transform:translateY(100px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-ov.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:1.6rem;width:390px;max-width:92vw;position:relative}
+.mc{position:absolute;top:13px;right:13px;background:none;border:none;color:var(--text2);font-size:1.1rem;cursor:pointer}
+</style>
+</head>
+<body>
+<nav>
+  <div class="ni">
+    <a class="logo" href="#" onclick="show('dashboard');return false;"><div class="logo-i">🌿</div>EcoFlows OS</a>
+    <div class="nl">
+      <button class="active" onclick="show('dashboard')">Dashboard</button>
+      <button onclick="show('hydrosolar')">HydroSolar</button>
+      <button onclick="show('aquaenergy')">Aqua-Energy</button>
+      <button onclick="show('greengrid')">GreenGrid</button>
+      <button onclick="show('ecostore')">Eco Store</button>
+      <button onclick="show('aiecobot')">AI Eco Bot</button>
+    </div>
+    <div class="nr">
+      <div class="badge"><div class="dot"></div>2,840 pts</div>
+      <button class="btn-p">Aarav S.</button>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EcoFlows OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0a0e0a;--bg2:#111611;--bg3:#171e17;--bg4:#1e271e;--card:#141c14;--border:rgba(74,200,80,0.15);--border2:rgba(74,200,80,0.25);--green:#4ac850;--teal:#26d4b4;--blue:#4a9eff;--amber:#f5a623;--coral:#ff6b6b;--text:#e8f5e9;--text2:#8fbc92;--text3:#4a7a4e;--glow:rgba(74,200,80,0.08);--r:12px;--rl:18px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(74,200,80,0.06),transparent 70%);pointer-events:none;z-index:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,10,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.ni{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;height:60px;padding:0 1.5rem}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:1.05rem;color:var(--green);text-decoration:none;flex-shrink:0}
+.logo-i{width:28px;height:28px;background:linear-gradient(135deg,var(--green),var(--teal));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.nl{display:flex;gap:2px;flex:1;overflow:hidden}
+.nl button{background:none;border:none;color:var(--text2);font-family:inherit;font-size:.82rem;padding:6px 11px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;font-weight:500}
+.nl button:hover{color:var(--text);background:var(--glow)}
+.nl button.active{color:var(--green);background:rgba(74,200,80,0.1)}
+.nr{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.badge{background:rgba(74,200,80,0.12);border:1px solid var(--border2);border-radius:20px;padding:4px 12px;font-size:.78rem;color:var(--green);font-weight:600;display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.btn-p{background:var(--green);color:#0a0e0a;border:none;border-radius:8px;padding:7px 14px;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-p:hover{background:#5cd662;transform:translateY(-1px)}
+section{display:none;min-height:calc(100vh - 60px);margin-top:60px;position:relative;z-index:1}
+section.active{display:block}
+.con{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:1.4rem}
+.title{font-size:1.1rem;font-weight:700;margin-bottom:1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:800px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.nl{display:none}}
+@media(max-width:550px){.grid3{grid-template-columns:1fr 1fr}}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.fl{font-size:.75rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.fi{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 13px;color:var(--text);font-family:inherit;font-size:.88rem}
+.fi:focus{outline:none;border-color:var(--green)}
+.sec-h{margin-bottom:1.5rem}
+.sec-h h2{font-size:1.7rem;font-weight:700;letter-spacing:-.5px}
+.sec-h p{color:var(--text2);margin-top:5px;font-size:.88rem}
+.ab-btn{width:100%;background:linear-gradient(135deg,var(--green),var(--teal));color:#0a0e0a;border:none;border-radius:10px;padding:12px;font-family:inherit;font-size:.93rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:6px}
+.ab-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,200,80,.3)}
+.hr{border:none;border-top:1px solid var(--border);margin:1.4rem 0}
+.tab-bar{display:flex;gap:6px;margin-bottom:1.4rem;border-bottom:1px solid var(--border);padding-bottom:10px;flex-wrap:wrap}
+.tab-btn{background:none;border:none;color:var(--text2);font-family:inherit;font-size:.83rem;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s}
+.tab-btn.active{background:rgba(74,200,80,0.12);color:var(--green)}
+.pb{background:var(--bg3);border-radius:4px;height:5px;overflow:hidden;margin:8px 0}
+.pf{height:100%;border-radius:4px;transition:width 1s ease}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--green);border-radius:10px;padding:11px 16px;font-size:.84rem;z-index:300;transform:translateY(100px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-ov.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:1.6rem;width:390px;max-width:92vw;position:relative}
+.mc{position:absolute;top:13px;right:13px;background:none;border:none;color:var(--text2);font-size:1.1rem;cursor:pointer}
+</style>
+</head>
+<body>
+<nav>
+  <div class="ni">
+    <a class="logo" href="#" onclick="show('dashboard');return false;"><div class="logo-i">🌿</div>EcoFlows OS</a>
+    <div class="nl">
+      <button class="active" onclick="show('dashboard')">Dashboard</button>
+      <button onclick="show('hydrosolar')">HydroSolar</button>
+      <button onclick="show('aquaenergy')">Aqua-Energy</button>
+      <button onclick="show('greengrid')">GreenGrid</button>
+      <button onclick="show('ecostore')">Eco Store</button>
+      <button onclick="show('aiecobot')">AI Eco Bot</button>
+    </div>
+    <div class="nr">
+      <div class="badge"><div class="dot"></div>2,840 pts</div>
+      <button class="btn-p">Aarav S.</button>
+    </div>
+  </div>
+</nav>
+
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="active">
+<div class="con">
+  <div style="text-align:center;padding:2rem 0 1rem">
+    <div style="font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px">Welcome back, Aarav</div>
+    <h1 style="font-size:2.6rem;font-weight:700;letter-spacing:-1px">Your Impact <span style="color:var(--green)">Dashboard</span></h1>
+    <p style="color:var(--text2);margin-top:.6rem">Jaipur, Rajasthan · March 2026</p>
+  </div>
+  <div style="display:flex;justify-content:center;margin:2rem 0 1.5rem">
+    <div style="position:relative;width:180px;height:180px">
+      <canvas id="scoreCanvas" width="180" height="180" style="position:absolute;inset:0"></canvas>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div id="scoreNum" style="font-size:3rem;font-weight:700;color:var(--green);line-height:1">0</div>
+        <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600">Eco Score</div>
+      </div>
+    </div>
+  </div>
+  <div class="grid4">
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:6px">💧</div><div style="font-size:1.6rem;font-weight:700;color:var(--teal)">12,480L</div><div style="font-size:.75rem;color:var(--text2)">Water Saved / Month</div><div style="font-size:.7rem;color:var(--green);margin-top:4px">↑ 18% vs last month</div></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:6px">☀️</div><div style="font-size:1.6rem;font-weight:700;color:var(--amber)">847 kWh</div><div style="font-size:.75rem;color:var(--text2)">Solar Generated</div><div style="font-size:.7rem;color:var(--green);margin-top:4px">↑ 34% vs last month</div></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:6px">🌱</div><div style="font-size:1.6rem;font-weight:700;color:var(--green)">2.4t</div><div style="font-size:.75rem;color:var(--text2)">CO₂ Reduced / Year</div><div style="font-size:.7rem;color:var(--green);margin-top:4px">↑ 12% vs last year</div></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:6px">⚡</div><div style="font-size:1.6rem;font-weight:700;color:var(--coral)">₹3,240</div><div style="font-size:.75rem;color:var(--text2)">Energy Savings / Month</div><div style="font-size:.7rem;color:var(--green);margin-top:4px">↑ 8% vs last month</div></div>
+  </div>
+  <div style="margin:1.2rem 0;display:flex;gap:10px;flex-wrap:wrap">
+    <span style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,.3);border-radius:20px;padding:5px 13px;font-size:.78rem;color:var(--amber);display:flex;align-items:center;gap:6px">🏆 Water Warrior</span>
+    <span style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,.3);border-radius:20px;padding:5px 13px;font-size:.78rem;color:var(--amber);display:flex;align-items:center;gap:6px">☀️ Solar Champion</span>
+    <span style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:.78rem;color:var(--text2)">🌱 Green Guardian <span style="font-size:.66rem;color:var(--text3)">locked</span></span>
+    <span style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,.3);border-radius:20px;padding:5px 13px;font-size:.78rem;color:var(--amber)">💧 Aqua Saver</span>
+  </div>
+  <hr class="hr"/>
+  <div class="title">Explore <span style="color:var(--green)">Features</span></div>
+  <div class="grid3">
+    <div class="card" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'" onclick="show('hydrosolar')"><div style="font-size:1.8rem;margin-bottom:8px">☀️</div><div style="font-weight:700;font-size:.92rem">HydroSolar Analyzer</div><div style="font-size:.76rem;color:var(--text2);margin-top:4px">Solar & rainwater potential</div></div>
+    <div class="card" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'" onclick="show('aquaenergy')"><div style="font-size:1.8rem;margin-bottom:8px">📊</div><div style="font-weight:700;font-size:.92rem">Aqua-Energy Dashboard</div><div style="font-size:.76rem;color:var(--text2);margin-top:4px">Real-time monitoring</div></div>
+    <div class="card" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'" onclick="show('greengrid')"><div style="font-size:1.8rem;margin-bottom:8px">🏆</div><div style="font-weight:700;font-size:.92rem">GreenGrid Optimizer</div><div style="font-size:.76rem;color:var(--text2);margin-top:4px">Leaderboard & challenges</div></div>
+    <div class="card" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'" onclick="show('ecostore')"><div style="font-size:1.8rem;margin-bottom:8px">🛒</div><div style="font-weight:700;font-size:.92rem">Eco Store</div><div style="font-size:.76rem;color:var(--text2);margin-top:4px">Redeem eco points</div></div>
+    <div class="card" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'" onclick="show('aiecobot')"><div style="font-size:1.8rem;margin-bottom:8px">🤖</div><div style="font-weight:700;font-size:.92rem">AI Eco Bot</div><div style="font-size:.76rem;color:var(--text2);margin-top:4px">Personal sustainability AI</div></div>
+    <div class="card" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'" onclick="show('greengrid')"><div style="font-size:1.8rem;margin-bottom:8px">🎖️</div><div style="font-weight:700;font-size:.92rem">Badges & Challenges</div><div style="font-size:.76rem;color:var(--text2);margin-top:4px">Compete & earn</div></div>
+  </div>
+</div>
+</section>
+
+<!-- HYDROSOLAR -->
+<section id="hydrosolar">
+<div class="con">
+  <div class="sec-h"><h2>☀️ HydroSolar Analyzer</h2><p>AI-powered solar & rainwater analysis for your property</p></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="title">Property Details</div>
+      <div class="fg"><label class="fl">State</label>
+        <select class="fi" id="hs-state" onchange="loadCities()">
+          <option value="">Select State</option>
+          <option value="RJ">Rajasthan</option><option value="MH">Maharashtra</option><option value="KA">Karnataka</option>
+          <option value="TN">Tamil Nadu</option><option value="GJ">Gujarat</option><option value="UP">Uttar Pradesh</option>
+          <option value="DL">Delhi</option><option value="WB">West Bengal</option><option value="KL">Kerala</option><option value="AP">Andhra Pradesh</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">City</label><select class="fi" id="hs-city"><option>Select City</option></select></div>
+      <div class="fg"><label class="fl">Rooftop Size (m²)</label><input type="number" class="fi" id="hs-roof" value="80"/></div>
+      <div class="fg"><label class="fl">Weather</label>
+        <select class="fi" id="hs-weather">
+          <option value="s">Mostly Sunny</option><option value="p">Partly Cloudy</option><option value="c">Mostly Cloudy</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Annual Rainfall (mm)</label><input type="number" class="fi" id="hs-rain" value="500"/></div>
+      <button class="ab-btn" onclick="analyzeHS()">🔍 Analyze My Property</button>
+    </div>
+    <div id="hs-out">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:14px;text-align:center;color:var(--text2)">
+        <div style="font-size:3rem">🌞💧</div><div style="font-weight:600">Fill property details to see analysis</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- AQUA-ENERGY -->
+<section id="aquaenergy">
+<div class="con">
+  <div class="sec-h"><h2>💧⚡ Aqua-Energy Dashboard</h2><p>Real-time monitoring — updates every 2 seconds</p></div>
+  <div id="aq-alert" style="display:none;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,.25);border-radius:10px;padding:.85rem 1.1rem;font-size:.83rem;color:#ff9a9a;margin-bottom:1rem">⚠️ High water usage detected! 40% above daily average.</div>
+  <div class="grid4">
+    <div class="card" style="position:relative"><div style="position:absolute;top:12px;right:16px;width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite"></div><div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px">Water Usage</div><div style="font-size:1.9rem;font-weight:700;color:var(--teal);font-family:'DM Mono',monospace"><span id="lv-w">0</span>L</div><div style="font-size:.7rem;color:var(--text2)">Current Usage</div></div>
+    <div class="card" style="position:relative"><div style="position:absolute;top:12px;right:16px;width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite"></div><div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px">Flow Rate</div><div style="font-size:1.9rem;font-weight:700;color:var(--teal);font-family:'DM Mono',monospace"><span id="lv-f">0</span> L/m</div><div style="font-size:.7rem;color:var(--text2)">Water Flow</div></div>
+    <div class="card" style="position:relative"><div style="position:absolute;top:12px;right:16px;width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 2s infinite"></div><div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px">Electricity</div><div style="font-size:1.9rem;font-weight:700;color:var(--amber);font-family:'DM Mono',monospace"><span id="lv-e">0</span>kW</div><div style="font-size:.7rem;color:var(--text2)">Current Usage</div></div>
+    <div class="card" style="position:relative"><div style="position:absolute;top:12px;right:16px;width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 2s infinite"></div><div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px">Peak Load</div><div style="font-size:1.9rem;font-weight:700;color:var(--amber);font-family:'DM Mono',monospace"><span id="lv-p">0</span>kW</div><div style="font-size:.7rem;color:var(--text2)">Active Load</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><div style="font-size:.86rem;font-weight:700">24-Hour Consumption</div><div style="display:flex;gap:6px"><button class="tab-btn active" onclick="switchAQ('w',this)">Water</button><button class="tab-btn" onclick="switchAQ('e',this)">Energy</button></div></div><canvas id="aqChart" height="180"></canvas></div>
+    <div class="card"><div style="font-size:.86rem;font-weight:700;margin-bottom:1rem">30-Day Trends</div><canvas id="trendChart" height="180"></canvas></div>
+  </div>
+  <hr class="hr"/>
+  <div class="grid2">
+    <div><div class="title">💡 Today's Insights</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="padding:.9rem"><div style="font-size:.8rem;font-weight:700;color:var(--teal);margin-bottom:3px">💧 Water Peak: 7–9 AM</div><div style="font-size:.76rem;color:var(--text2)">Daily total: 142L · Avg flow: 4.2 L/min · 12% below yesterday</div></div>
+        <div class="card" style="padding:.9rem"><div style="font-size:.8rem;font-weight:700;color:var(--amber);margin-bottom:3px">⚡ Energy Peak: 6–8 PM</div><div style="font-size:.76rem;color:var(--text2)">Daily total: 18.4 kWh · Peak: 3.8 kW · 5% above avg</div></div>
+        <div class="card" style="padding:.9rem"><div style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:3px">🌞 Solar Offset: 62%</div><div style="font-size:.76rem;color:var(--text2)">11.4 kWh solar · Grid: 7.0 kWh · Saving ₹108 today</div></div>
+      </div>
+    </div>
+    <div><div class="title">🎯 Efficiency Tips</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="padding:.9rem;border-color:rgba(74,200,80,.25)"><div style="font-size:.76rem;color:var(--text2);line-height:1.6">Run dishwasher after 10 PM to avoid peak rates. Save <strong style="color:var(--green)">₹45/day</strong></div></div>
+        <div class="card" style="padding:.9rem;border-color:rgba(38,212,180,.25)"><div style="font-size:.76rem;color:var(--text2);line-height:1.6">Low-flow showerhead saves <strong style="color:var(--teal)">12L/day</strong> from morning showers</div></div>
+        <div class="card" style="padding:.9rem;border-color:rgba(245,166,35,.25)"><div style="font-size:.76rem;color:var(--text2);line-height:1.6">AC at 24°C vs 22°C saves <strong style="color:var(--amber)">18% energy</strong></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- GREENGRID -->
+<section id="greengrid">
+<div class="con">
+  <div class="sec-h"><h2>🏆 GreenGrid Optimizer</h2><p>Compete, challenge, and earn with your community</p></div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="ggTab('lb',this)">🏆 Leaderboard</button>
+    <button class="tab-btn" onclick="ggTab('ch',this)">⚔️ Challenges</button>
+    <button class="tab-btn" onclick="ggTab('ba',this)">🎖️ Badges</button>
+    <button class="tab-btn" onclick="ggTab('es',this)">📊 Eco Score</button>
+  </div>
+  <div id="gg-lb">
+    <div class="grid2">
+      <div class="card"><div class="title">👤 Individual Rankings</div><div id="lb-list"></div></div>
+      <div class="card"><div class="title">📊 Score Overview</div>
+        <div style="text-align:center;padding:1rem 0"><div style="font-size:4.5rem;font-weight:700;color:var(--green);line-height:1">78</div><div style="font-size:.73rem;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:1px">Your Eco Score · March 2026</div><div style="font-size:.78rem;color:var(--text2);margin-top:8px">Rank <strong style="color:var(--green)">#7</strong> of 2,840 users in Jaipur</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:1rem">
+          <div class="card" style="padding:.8rem"><div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;margin-bottom:6px"><span>☀️ Solar</span><span style="color:var(--amber)">88/100</span></div><div class="pb"><div class="pf" style="width:88%;background:var(--amber)"></div></div></div>
+          <div class="card" style="padding:.8rem"><div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;margin-bottom:6px"><span>💧 Water</span><span style="color:var(--teal)">74/100</span></div><div class="pb"><div class="pf" style="width:74%;background:var(--teal)"></div></div></div>
+          <div class="card" style="padding:.8rem"><div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;margin-bottom:6px"><span>🌱 Carbon</span><span style="color:var(--coral)">80/100</span></div><div class="pb"><div class="pf" style="width:80%;background:var(--coral)"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="gg-ch" style="display:none"><div id="ch-list"></div></div>
+  <div id="gg-ba" style="display:none"><div class="grid3" id="ba-grid"></div></div>
+  <div id="gg-es" style="display:none">
+    <div class="grid2"><div class="card"><div class="title">Eco Score Radar</div><canvas id="radarChart" height="280"></canvas></div>
+      <div class="card"><canvas id="barChart" height="280"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ECO STORE -->
+<section id="ecostore">
+<div class="con">
+  <div class="sec-h"><h2>🛒 Eco Store</h2><p>Redeem eco-points for sustainable products — up to 50% off</p></div>
+  <div style="display:grid;grid-template-columns:1fr 240px;gap:18px">
+    <div>
+      <input type="text" id="s-search" placeholder="🔍  Search products..." oninput="renderProds()" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:.88rem;width:100%;margin-bottom:.8rem"/>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.2rem" id="f-row">
+        <button class="tab-btn active" onclick="setF('all',this)">All</button>
+        <button class="tab-btn" onclick="setF('solar',this)">🌞 Solar</button>
+        <button class="tab-btn" onclick="setF('water',this)">💧 Water</button>
+        <button class="tab-btn" onclick="setF('energy',this)">⚡ Energy</button>
+        <button class="tab-btn" onclick="setF('general',this)">🌱 General</button>
+      </div>
+      <div class="grid3" id="prod-grid"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="background:linear-gradient(135deg,rgba(74,200,80,.12),rgba(38,212,180,.07));border:1px solid var(--border2);border-radius:var(--rl);padding:1.3rem">
+        <div style="font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-weight:600">Your Balance</div>
+        <div style="font-size:2.3rem;font-weight:700;color:var(--green)">2,840</div>
+        <div style="font-size:.75rem;color:var(--text2);margin-top:3px">eco points · 1 pt = ₹0.10 off</div>
+        <hr style="border-color:rgba(74,200,80,.2);margin:.9rem 0"/>
+        <div style="font-size:.74rem;color:var(--text2);line-height:1.7">Max discount: <strong style="color:var(--green)">50%</strong><br/>Points value: <strong style="color:var(--green)">₹284</strong> available</div>
+      </div>
+      <div class="card" style="padding:.9rem">
+        <div style="font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;font-weight:600">Your Token</div>
+        <div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--text2);word-break:break-all;margin-top:5px">EF-28400X-RJ-2024-A7K9M</div>
+      </div>
+      <div class="card" style="padding:.9rem">
+        <div style="font-size:.78rem;font-weight:700;margin-bottom:8px">💡 Earn Points</div>
+        <div style="font-size:.73rem;color:var(--text2);line-height:1.9">💧 100L saved → +10 pts<br/>⚡ 10 kWh saved → +5 pts<br/>☀️ 100 kWh solar → +15 pts<br/>⚔️ Challenge done → +50–750 pts<br/>📅 Daily check-in → +5 pts</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- AI ECO BOT -->
+<section id="aiecobot">
+<div class="con" style="max-width:900px">
+  <div class="sec-h"><h2>🤖 AI Eco Bot</h2><p>Your personal sustainability assistant</p></div>
+  <div style="height:520px;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">
+    <div style="padding:.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg3)">
+      <div style="width:34px;height:34px;background:linear-gradient(135deg,var(--green),var(--teal));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px">🌿</div>
+      <div><div style="font-weight:700;font-size:.88rem">EcoBot AI</div><div style="font-size:.7rem;color:var(--green)">● Online · Sustainability Expert</div></div>
+    </div>
+    <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.1rem;display:flex;flex-direction:column;gap:12px"></div>
+    <div style="display:flex;gap:7px;padding:0 1.1rem .7rem;flex-wrap:wrap">
+      <button onclick="qSend('How can I reduce my electricity bill?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">⚡ Reduce energy bill</button>
+      <button onclick="qSend('When is the best time to run appliances?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">🕐 Appliance timing</button>
+      <button onclick="qSend('Calculate my solar panel ROI')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">☀️ Solar ROI</button>
+      <button onclick="qSend('How can I save more water?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">💧 Save water</button>
+      <button onclick="qSend('What eco points can I earn today?')" style="background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.73rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">🏆 Earn points</button>
+    </div>
+    <div style="display:flex;gap:9px;padding:.9rem 1.1rem;border-top:1px solid var(--border);background:var(--bg3)">
+      <input type="text" id="chat-in" placeholder="Ask me anything about sustainability..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text);font-family:inherit;font-size:.86rem" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+      <button onclick="sendChat()" style="background:var(--green);color:#0a0e0a;border:none;border-radius:10px;padding:0 15px;cursor:pointer;font-size:1rem;transition:all .2s">➤</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <button class="mc" onclick="closeModal()">✕</button>
+    <div style="font-size:1rem;font-weight:700;margin-bottom:1rem" id="m-name">Product</div>
+    <div class="fg"><label class="fl">Quantity</label><input type="number" class="fi" id="m-qty" value="1" min="1" oninput="updModal()"/></div>
+    <div style="margin:1rem 0">
+      <div style="display:flex;justify-content:space-between;font-size:.76rem;color:var(--text2);margin-bottom:5px"><span>Eco Points to Use</span><span id="m-pv">0 pts</span></div>
+      <input type="range" id="m-pts" min="0" max="2840" value="0" style="width:100%;accent-color:var(--green)" oninput="updModal()"/>
+    </div>
+    <div style="background:var(--bg3);border-radius:10px;padding:.9rem;font-size:.83rem;display:flex;flex-direction:column;gap:5px">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Original</span><span id="m-orig">—</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Discount</span><span id="m-disc" style="color:var(--green)">—</span></div>
+      <hr style="border-color:var(--border);margin:3px 0"/>
+      <div style="display:flex;justify-content:space-between"><span style="font-weight:700;color:var(--green)">Final</span><span style="font-weight:700;color:var(--green)" id="m-fin">—</span></div>
+    </div>
+    <button onclick="confirmBuy()" style="width:100%;background:linear-gradient(135deg,var(--green),var(--teal));color:#0a0e0a;border:none;border-radius:10px;padding:12px;font-family:inherit;font-size:.93rem;font-weight:700;cursor:pointer;margin-top:12px">✓ Confirm Purchase</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+
+<script>
+// ===== NAV =====
+const SECS=['dashboard','hydrosolar','aquaenergy','greengrid','ecostore','aiecobot'];
+function show(id){
+  SECS.forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nl button').forEach((b,i)=>{b.classList.toggle('active',SECS[i]===id)});
+  if(id==='aquaenergy')initAQ();
+  if(id==='greengrid')initGG();
+  if(id==='ecostore')renderProds();
+  if(id==='aiecobot')initBot();
+}
+// ===== DASHBOARD SCORE RING =====
+function initDash(){
+  const cv=document.getElementById('scoreCanvas'),ctx=cv.getContext('2d');
+  let v=0;const t=78;
+  const draw=n=>{ctx.clearRect(0,0,180,180);const r=72,cx=90,cy=90,s=-Math.PI/2,full=2*Math.PI;ctx.lineWidth=9;ctx.lineCap='round';ctx.beginPath();ctx.arc(cx,cy,r,0,full);ctx.strokeStyle='rgba(74,200,80,0.1)';ctx.stroke();if(n>0){ctx.beginPath();ctx.arc(cx,cy,r,s,s+(full*n/100));const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy);g.addColorStop(0,'#4ac850');g.addColorStop(1,'#26d4b4');ctx.strokeStyle=g;ctx.stroke();}};
+  const ai=setInterval(()=>{v=Math.min(v+1,t);draw(v);document.getElementById('scoreNum').textContent=v;if(v>=t)clearInterval(ai);},18);
+}
+// ===== HYDROSOLAR =====
+const CD={RJ:['Jaipur','Jodhpur','Udaipur','Kota'],MH:['Mumbai','Pune','Nagpur','Nashik'],KA:['Bengaluru','Mysuru','Hubli'],TN:['Chennai','Coimbatore','Madurai'],GJ:['Ahmedabad','Surat','Vadodara'],UP:['Lucknow','Agra','Varanasi'],DL:['New Delhi','Dwarka','Rohini'],WB:['Kolkata','Siliguri','Asansol'],KL:['Thiruvananthapuram','Kochi','Kozhikode'],AP:['Hyderabad','Visakhapatnam','Vijayawada']};
+function loadCities(){const s=document.getElementById('hs-state').value,c=document.getElementById('hs-city');c.innerHTML='<option>Select City</option>';if(CD[s])CD[s].forEach(x=>{const o=document.createElement('option');o.textContent=x;c.appendChild(o)});}
+let hsC=null;
+function analyzeHS(){
+  const roof=+document.getElementById('hs-roof').value||80,rain=+document.getElementById('hs-rain').value||500,w=document.getElementById('hs-weather').value;
+  const m={s:5.5,p:4.2,c:3.0};
+  const sol=Math.round(roof*m[w]*365/1000),wat=Math.round(roof*rain*0.85/1000),sav=Math.round((sol*8+wat*3)/12),co2=Math.round(sol*0.82);
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const sf=[.7,.8,1,1.1,1.15,1,.9,.9,1,1.05,.85,.7],wf=[.1,.1,.15,.2,.3,.8,1.2,1.1,.7,.3,.1,.1];
+  document.getElementById('hs-out').innerHTML=`
+  <div class="card" style="margin-bottom:14px">
+    <div class="title">📊 Results</div>
+    <div class="grid2">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.9rem"><div style="font-size:1.4rem;font-weight:700;color:var(--amber)">${sol} kWh</div><div style="font-size:.72rem;color:var(--text2);margin-top:2px">Solar Energy / Year</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.9rem"><div style="font-size:1.4rem;font-weight:700;color:var(--teal)">${wat} m³</div><div style="font-size:.72rem;color:var(--text2);margin-top:2px">Rainwater / Year</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.9rem"><div style="font-size:1.4rem;font-weight:700;color:var(--green)">₹${sav}</div><div style="font-size:.72rem;color:var(--text2);margin-top:2px">Monthly Savings</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.9rem"><div style="font-size:1.4rem;font-weight:700;color:var(--coral)">${co2} kg</div><div style="font-size:.72rem;color:var(--text2);margin-top:2px">CO₂ Reduced / Year</div></div>
+    </div>
+    <div style="background:rgba(74,200,80,0.07);border:1px solid rgba(74,200,80,.2);border-radius:10px;padding:.9rem 1rem;margin-top:1rem;font-size:.83rem;line-height:1.7;color:var(--text2)"><strong style="color:var(--green)">AI Recommendation:</strong> Install ${Math.round(roof/3)} solar panels (300W each). Combined with a ${Math.round(wat*1000/12)}L/month rainwater system, save <strong style="color:var(--green)">₹${sav}/month</strong>. Payback: ~4.5 years.</div>
+  </div>
+  <div class="card"><div style="font-size:.86rem;font-weight:700;margin-bottom:.8rem">Monthly Forecast</div><canvas id="hsChart" height="180"></canvas></div>`;
+  if(hsC)hsC.destroy();
+  const ctx=document.getElementById('hsChart').getContext('2d');
+  hsC=new Chart(ctx,{type:'bar',data:{labels:mo,datasets:[{label:'Solar (kWh)',data:sf.map(x=>Math.round(sol/12*x)),backgroundColor:'rgba(245,166,35,.7)',borderRadius:4},{label:'Water (m³)',data:wf.map(x=>+(wat/12*x*2).toFixed(1)),backgroundColor:'rgba(38,212,180,.7)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8fbc92',font:{family:'Space Grotesk',size:11}}}},scales:{x:{ticks:{color:'#4a7a4e',font:{size:9}},grid:{color:'rgba(74,200,80,.04)'}},y:{ticks:{color:'#4a7a4e',font:{size:9}},grid:{color:'rgba(74,200,80,.04)'}}}}});
+}
+// ===== AQUA ENERGY =====
+let aqC=null,trC=null,liveInt=null,aqM='w',alShown=false;
+function initAQ(){
+  if(liveInt)clearInterval(liveInt);
+  liveInt=setInterval(liveUpdate,2000);liveUpdate();buildAQChart();buildTrendChart();
+}
+function liveUpdate(){
+  const w=Math.round(80+Math.random()*120),f=(2+Math.random()*5).toFixed(1),e=(1.5+Math.random()*3).toFixed(1),p=(2+Math.random()*4).toFixed(1);
+  document.getElementById('lv-w').textContent=w;document.getElementById('lv-f').textContent=f;
+  document.getElementById('lv-e').textContent=e;document.getElementById('lv-p').textContent=p;
+  if(w>180&&!alShown){document.getElementById('aq-alert').style.display='block';alShown=true;setTimeout(()=>{document.getElementById('aq-alert').style.display='none';alShown=false;},5000);}
+}
+function buildAQChart(){if(aqC)aqC.destroy();const h=Array.from({length:24},(_,i)=>i+':00'),iW=aqM==='w',d=iW?Array.from({length:24},(_,i)=>Math.round(50+Math.sin(i/3)*30+Math.random()*40)):Array.from({length:24},(_,i)=>+(1+Math.sin(i/4)*.8+Math.random()*1.5).toFixed(1));const ctx=document.getElementById('aqChart').getContext('2d');aqC=new Chart(ctx,{type:'line',data:{labels:h,datasets:[{label:iW?'Water (L)':'Energy (kW)',data:d,borderColor:iW?'#26d4b4':'#f5a623',backgroundColor:iW?'rgba(38,212,180,.1)':'rgba(245,166,35,.1)',fill:true,tension:.4,pointRadius:2}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8fbc92',font:{family:'Space Grotesk',size:11}}}},scales:{x:{ticks:{color:'#4a7a4e',font:{size:9},maxTicksLimit:8},grid:{color:'rgba(74,200,80,.04)'}},y:{ticks:{color:'#4a7a4e',font:{size:9}},grid:{color:'rgba(74,200,80,.04)'}}}}});}
+function buildTrendChart(){if(trC)trC.destroy();const d=Array.from({length:30},(_,i)=>'Mar '+(i+1));const ctx=document.getElementById('trendChart').getContext('2d');trC=new Chart(ctx,{type:'line',data:{labels:d,datasets:[{label:'Water (×10L)',data:Array.from({length:30},()=>Math.round(120+Math.random()*60)),borderColor:'#26d4b4',tension:.4,pointRadius:0,yAxisID:'y'},{label:'Energy (kWh)',data:Array.from({length:30},()=>+(15+Math.random()*8).toFixed(1)),borderColor:'#f5a623',tension:.4,pointRadius:0,yAxisID:'y1'}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8fbc92',font:{family:'Space Grotesk',size:11}}}},scales:{x:{ticks:{color:'#4a7a4e',font:{size:8},maxTicksLimit:6},grid:{color:'rgba(74,200,80,.04)'}},y:{ticks:{color:'#26d4b4',font:{size:9}},grid:{color:'rgba(74,200,80,.04)'}},y1:{position:'right',ticks:{color:'#f5a623',font:{size:9}},grid:{drawOnChartArea:false}}}}});}
+function switchAQ(m,el){document.querySelectorAll('#aquaenergy .tab-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');aqM=m;buildAQChart();}
+// ===== GREENGRID =====
+const LB=[{n:'Priya M.',p:4820,c:'#26d4b4'},{n:'Ravi K.',p:4310,c:'#f5a623'},{n:'Aisha T.',p:3980,c:'#ff6b6b'},{n:'Suresh B.',p:3640,c:'#4a9eff'},{n:'Meena P.',p:3200,c:'#a78bfa'},{n:'Arun D.',p:3050,c:'#34d399'},{n:'Aarav S.',p:2840,c:'#4ac850',you:true},{n:'Kavita N.',p:2600,c:'#f472b6'},{n:'Dev R.',p:2400,c:'#60a5fa'},{n:'Pooja L.',p:2100,c:'#fbbf24'}];
+const CH=[{n:'💧 Water Conservation',prog:72,pts:250,d:'Save 500L this week'},{n:'☀️ Solar Marathon',prog:45,pts:400,d:'Generate 200kWh this month'},{n:'♻️ Zero Waste Week',prog:88,pts:150,d:'Reduce waste by 30%'},{n:'🌱 Carbon Fighter',prog:30,pts:500,d:'Reduce 50kg CO₂ this month'}];
+const BA=[{i:'🏆',n:'Water Warrior',r:'10,000L saved',u:true},{i:'☀️',n:'Solar Champion',r:'1,000 kWh generated',u:true},{i:'🌱',n:'Green Guardian',r:'1 ton CO₂ reduced',u:false},{i:'⚡',n:'Energy Master',r:'30 days grid-free',u:false},{i:'💧',n:'Aqua Saver',r:'5,000L rainwater',u:true},{i:'🌍',n:'Eco Hero',r:'90+ eco score',u:false}];
+const RK=['🏆','🥈','🥉'];
+let rC=null,bC=null;
+function initGG(){
+  document.getElementById('lb-list').innerHTML=LB.map((u,i)=>`<div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;${u.you?'background:rgba(74,200,80,.08);border:1px solid rgba(74,200,80,.2)':''}">
+    <div style="font-size:.95rem;font-weight:700;min-width:28px;color:${i===0?'var(--amber)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--text2)'}">${i<3?RK[i]:'#'+(i+1)}</div>
+    <div style="width:34px;height:34px;border-radius:50%;background:${u.c}22;color:${u.c};display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0">${u.n.split(' ').map(x=>x[0]).join('')}</div>
+    <div style="flex:1"><div style="font-weight:600;font-size:.88rem">${u.n}${u.you?' (You)':''}</div><div style="background:var(--bg3);border-radius:4px;height:3px;margin-top:4px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,var(--green),var(--teal));width:${Math.round(u.p/4820*100)}%"></div></div></div>
+    <div style="font-family:'DM Mono',monospace;font-size:.8rem;color:var(--text2)">${u.p.toLocaleString()}</div>
+  </div>`).join('');
+  document.getElementById('ch-list').innerHTML=CH.map(c=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-weight:700;font-size:.92rem">${c.n}</div><div style="font-size:.73rem;color:var(--text2);margin-top:2px">${c.d}</div></div><span style="background:rgba(74,200,80,.12);border:1px solid var(--border2);border-radius:20px;padding:3px 9px;font-size:.72rem;color:var(--green);font-weight:600">+${c.pts} pts</span></div><div class="pb"><div class="pf" style="width:${c.prog}%;background:linear-gradient(90deg,var(--green),var(--teal))"></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span style="font-size:.73rem;color:var(--text2)">${c.prog}% complete</span><button onclick="this.textContent=this.textContent==='Join'?'Joined ✓':'Join';this.style.background=this.textContent==='Joined ✓'?'var(--green)':'transparent';this.style.color=this.textContent==='Joined ✓'?'#0a0e0a':'var(--green)'" style="background:transparent;border:1px solid var(--green);color:var(--green);border-radius:6px;padding:4px 10px;font-family:inherit;font-size:.74rem;font-weight:600;cursor:pointer">Join</button></div></div>`).join('');
+  document.getElementById('ba-grid').innerHTML=BA.map(b=>`<div class="card" style="${b.u?'border-color:var(--amber);background:rgba(245,166,35,.05)':'opacity:.6'}"><div style="font-size:2rem;margin-bottom:6px;${b.u?'':'filter:grayscale(1)'}">${b.i}</div><div style="font-weight:700;font-size:.8rem">${b.n}</div><div style="font-size:.68rem;color:var(--text2);margin-top:3px">${b.r}</div><div style="font-size:.68rem;margin-top:5px;font-weight:600;color:${b.u?'var(--green)':'var(--text3)'}">${b.u?'✓ Earned':'Locked'}</div></div>`).join('');
+  if(!rC){const ctx=document.getElementById('radarChart').getContext('2d');rC=new Chart(ctx,{type:'radar',data:{labels:['Solar','Water','Waste','Carbon','Community','Efficiency'],datasets:[{label:'You',data:[88,74,70,80,65,82],backgroundColor:'rgba(74,200,80,.15)',borderColor:'#4ac850',pointBackgroundColor:'#4ac850',pointRadius:3},{label:'Avg',data:[65,60,55,62,70,58],backgroundColor:'rgba(38,212,180,.07)',borderColor:'#26d4b4',pointBackgroundColor:'#26d4b4',pointRadius:3}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8fbc92',font:{family:'Space Grotesk',size:11}}}},scales:{r:{ticks:{display:false},grid:{color:'rgba(74,200,80,.1)'},pointLabels:{color:'#8fbc92',font:{size:11}},angleLines:{color:'rgba(74,200,80,.1)'}}}}});}
+  if(!bC){const ctx=document.getElementById('barChart').getContext('2d');bC=new Chart(ctx,{type:'bar',data:{labels:['Solar','Water','Waste','Carbon','Community','Efficiency'],datasets:[{label:'Your Score',data:[88,74,70,80,65,82],backgroundColor:'rgba(74,200,80,.7)',borderRadius:5},{label:'City Avg',data:[65,60,55,62,70,58],backgroundColor:'rgba(38,212,180,.5)',borderRadius:5}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{labels:{color:'#8fbc92',font:{family:'Space Grotesk',size:11}}}},scales:{x:{max:100,ticks:{color:'#4a7a4e'},grid:{color:'rgba(74,200,80,.05)'}},y:{ticks:{color:'#8fbc92'},grid:{color:'rgba(74,200,80,.04)'}}}}});}
+}
+function ggTab(t,el){['lb','ch','ba','es'].forEach(x=>{const e=document.getElementById('gg-'+x);if(e)e.style.display='none';});document.getElementById('gg-'+t).style.display='block';document.querySelectorAll('#greengrid .tab-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+// ===== ECO STORE =====
+const PRODS=[{id:1,e:'🌞',n:'Solar Garden Light',d:'Weather-proof solar LED lights.',p:1299,pts:800,c:'solar'},{id:2,e:'⚡',n:'300W Solar Panel',d:'21% efficiency, 25yr warranty.',p:12999,pts:5000,c:'solar'},{id:3,e:'🚿',n:'Low-Flow Tap Aerator',d:'Reduces flow to 4L/min.',p:349,pts:200,c:'water'},{id:4,e:'📊',n:'Smart Water Meter',d:'AI leak detection + alerts.',p:2899,pts:1200,c:'water'},{id:5,e:'🌧️',n:'Rainwater Harvesting Kit',d:'500L rooftop collection.',p:8999,pts:3500,c:'water'},{id:6,e:'🔌',n:'Smart Energy Plug',d:'Monitor power with scheduling.',p:799,pts:400,c:'energy'},{id:7,e:'💡',n:'LED Bulb Pack (6x)',d:'1200lm, replaces 80W bulb.',p:599,pts:300,c:'energy'},{id:8,e:'🧴',n:'Eco Cleaning Kit',d:'Biodegradable plant-based cleaners.',p:699,pts:350,c:'general'},{id:9,e:'🌱',n:'Compost Starter Kit',d:'Bin + microbes + guide book.',p:1199,pts:600,c:'general'}];
+let sFil='all',curProd=null;
+function renderProds(){const q=(document.getElementById('s-search').value||'').toLowerCase(),g=document.getElementById('prod-grid'),fd=PRODS.filter(p=>(sFil==='all'||p.c===sFil)&&(p.n.toLowerCase().includes(q)||p.d.toLowerCase().includes(q)));g.innerHTML=fd.map(p=>`<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:1.1rem;display:flex;flex-direction:column;gap:8px;transition:all .2s" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'"><div style="font-size:2rem">${p.e}</div><div style="background:var(--bg3);border-radius:20px;padding:2px 9px;font-size:.66rem;color:var(--text2);font-weight:600;width:fit-content">${p.c}</div><div style="font-weight:700;font-size:.88rem">${p.n}</div><div style="font-size:.74rem;color:var(--text2);line-height:1.5;flex:1">${p.d}</div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:7px;border-top:1px solid var(--border)"><div><div style="font-size:1.1rem;font-weight:700;color:var(--green)">₹${p.p.toLocaleString()}</div><div style="font-size:.68rem;color:var(--text2)">${p.pts.toLocaleString()} pts needed</div></div><button onclick="openModal(${p.id})" style="background:var(--green);color:#0a0e0a;border:none;border-radius:7px;padding:6px 12px;font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer">Buy</button></div></div>`).join('');}
+function setF(f,el){sFil=f;document.querySelectorAll('#ecostore .tab-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderProds();}
+function openModal(id){curProd=PRODS.find(p=>p.id===id);document.getElementById('m-name').textContent=curProd.e+' '+curProd.n;document.getElementById('m-qty').value=1;document.getElementById('m-pts').value=0;document.getElementById('m-pts').max=Math.min(2840,curProd.pts);updModal();document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function updModal(){if(!curProd)return;const q=+document.getElementById('m-qty').value||1,pts=+document.getElementById('m-pts').value||0,orig=curProd.p*q,disc=Math.min(pts*.1,orig*.5),fin=orig-disc,pct=Math.round(disc/orig*100);document.getElementById('m-orig').textContent='₹'+orig.toLocaleString();document.getElementById('m-disc').textContent='−₹'+disc.toFixed(0)+' ('+pct+'%)';document.getElementById('m-fin').textContent='₹'+Math.round(fin).toLocaleString();document.getElementById('m-pv').textContent=pts+' pts';}
+function confirmBuy(){closeModal();toast('✓ Purchase confirmed! Order placed.');}
+// ===== AI BOT =====
+const BR={elec:'Here are your top 3 actions:\n\n1. 🕙 Shift AC & washing machine to after 10 PM — saves ₹45/day.\n2. ☀️ Clean solar panels monthly — boosts output 8–12%.\n3. 💡 Replace 4 remaining incandescent bulbs with LEDs.\n\nTotal potential saving: ~₹1,800/month!',app:'Optimal appliance timing for Jaipur:\n\n☀️ 11 AM–2 PM: Peak solar — run washing machine & dishwasher.\n🌙 10 PM–6 AM: Off-peak rates — run AC at 25°C.\n\nThis scheduling saves ₹62/day!',sol:'Your 80m² rooftop in Jaipur:\n\n☀️ Output: 1,440 kWh/year\n💰 Savings: ₹13,680/year\n🔧 Cost (6kW): ~₹3.6 lakhs\n📅 Payback: ~4.5 years (3.2 yrs with subsidies)',wat:'Water efficiency tips:\n\n1. 🚿 Low-flow showerhead — saves 12L/shower\n2. 🌧️ Harvest 510 m³ rainwater/year\n3. 🌿 Drip irrigation saves 40% garden water\n\nTotal: 4,200L saved/month!',pts:'Maximize points today:\n\n📅 Daily check-in: +5 pts\n💧 Save 100L: +10 pts\n⚔️ Join Solar Marathon: +400 pts\n\nYou need 1,160 more to reach Silver tier!',def:'Your eco score is 78/100 — top 15% in Rajasthan. Water score (74) is your biggest opportunity. Focus there to push above 80!'};
+function getResp(t){const l=t.toLowerCase();if(l.match(/elec|bill/))return BR.elec;if(l.match(/appl|timing|when/))return BR.app;if(l.match(/solar|roi|panel/))return BR.sol;if(l.match(/water|save water/))return BR.wat;if(l.match(/point|earn/))return BR.pts;return BR.def;}
+function initBot(){const m=document.getElementById('chat-msgs');if(m.children.length>0)return;addBot('🌿 Hi Aarav! I\'m EcoBot, your sustainability AI.\n\nYour eco score: 78/100 — great work! How can I help you save more today?');}
+function addBot(t){const m=document.getElementById('chat-msgs'),ti=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),d=document.createElement('div');d.style.cssText='max-width:80%;display:flex;flex-direction:column;gap:3px;align-self:flex-start';d.innerHTML=`<div style="padding:9px 13px;border-radius:13px;border-bottom-left-radius:3px;font-size:.83rem;line-height:1.55;background:var(--bg3);border:1px solid var(--border);white-space:pre-line">${t}</div><div style="font-size:.62rem;color:var(--text3);padding-left:4px">${ti}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function addUser(t){const m=document.getElementById('chat-msgs'),ti=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),d=document.createElement('div');d.style.cssText='max-width:80%;display:flex;flex-direction:column;gap:3px;align-self:flex-end;align-items:flex-end';d.innerHTML=`<div style="padding:9px 13px;border-radius:13px;border-bottom-right-radius:3px;font-size:.83rem;line-height:1.55;background:rgba(74,200,80,.15);border:1px solid rgba(74,200,80,.25)">${t}</div><div style="font-size:.62rem;color:var(--text3);padding-right:4px">${ti}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function showTyping(){const m=document.getElementById('chat-msgs'),d=document.createElement('div');d.id='typing';d.style.cssText='display:flex;align-items:center;gap:4px;padding:10px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:13px;width:fit-content';d.innerHTML='<div style="width:5px;height:5px;background:var(--text3);border-radius:50%;animation:pulse 1s infinite"></div><div style="width:5px;height:5px;background:var(--text3);border-radius:50%;animation:pulse 1s .2s infinite"></div><div style="width:5px;height:5px;background:var(--text3);border-radius:50%;animation:pulse 1s .4s infinite"></div>';m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function sendChat(){const inp=document.getElementById('chat-in'),t=inp.value.trim();if(!t)return;addUser(t);inp.value='';showTyping();setTimeout(()=>{const ty=document.getElementById('typing');if(ty)ty.remove();addBot(getResp(t));},1100+Math.random()*700);}
+function qSend(t){addUser(t);showTyping();setTimeout(()=>{const ty=document.getElementById('typing');if(ty)ty.remove();addBot(getResp(t));},1100+Math.random()*700);}
+// ===== TOAST =====
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+// ===== INIT =====
+window.addEventListener('load',initDash);
+</script>
+</body>
+</html>
