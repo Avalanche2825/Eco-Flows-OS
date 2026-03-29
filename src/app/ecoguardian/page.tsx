@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useLanguage } from "@/components/language-provider";
 
 export default function EcoGuardianPage() {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -209,11 +211,22 @@ export default function EcoGuardianPage() {
       }
     };
 
-    const onCanvasClick = (e: MouseEvent) => {
+    const onCanvasClick = (e: MouseEvent | PointerEvent | TouchEvent) => {
       if(!G.running || G.paused) return;
+      e.preventDefault(); // Prevent double-firing on mobile
       const rect = canvas.getBoundingClientRect();
       const sx = canvas.width / rect.width, sy = canvas.height / rect.height;
-      const x = (e.clientX - rect.left) * sx, y = (e.clientY - rect.top) * sy;
+      
+      let clientX, clientY;
+      if ('touches' in e && (e as TouchEvent).touches.length > 0) {
+        clientX = (e as TouchEvent).touches[0].clientX;
+        clientY = (e as TouchEvent).touches[0].clientY;
+      } else {
+        clientX = (e as MouseEvent | PointerEvent).clientX;
+        clientY = (e as MouseEvent | PointerEvent).clientY;
+      }
+
+      const x = (clientX - rect.left) * sx, y = (clientY - rect.top) * sy;
       if(x < 55) return;
       const w = WEAPONS[G.sel];
       if(G.coins < w.cost) { showToast('Need ' + w.cost + ' coins for ' + w.nm + '!'); return; }
@@ -226,6 +239,7 @@ export default function EcoGuardianPage() {
       if(stTw) stTw.textContent = towers.length.toString();
     };
     canvas.addEventListener('click', onCanvasClick);
+    canvas.addEventListener('touchstart', onCanvasClick, {passive: false});
 
     function burst(x: number, y: number, col: string, n: number, spd: number){
       for(let i=0; i<n; i++){
@@ -538,6 +552,7 @@ export default function EcoGuardianPage() {
     return () => {
       window.removeEventListener('resize', onResize);
       canvas.removeEventListener('click', onCanvasClick);
+      canvas.removeEventListener('touchstart', onCanvasClick);
       window.removeEventListener('beforeunload', onUnload);
       stopSessionTimer();
       if(raf) cancelAnimationFrame(raf);
@@ -597,7 +612,7 @@ export default function EcoGuardianPage() {
         <div id="main">
           {/* WEAPONS LEFT */}
           <div id="lp">
-            <div className="plbl">Eco Weapons</div>
+            <div className="plbl">{t("ecoWeapons", "Eco Weapons")}</div>
             <div className="wc sel" id="wb0" onClick={() => (window as any).sel(0)}>
               <div className="wc-dot" style={{background:"var(--a)"}}></div>
               <div className="wc-ico">☀️</div>

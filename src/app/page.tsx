@@ -84,9 +84,12 @@ const PIE_DATA = [
   { name: "Battery", value: 10, color: "#26d4b4" },
 ];
 
+import { useLanguage } from "@/components/language-provider";
+
 export default function DashboardPage() {
   const [chartMode, setChartMode] = useState<"water" | "energy" | "solar">("water");
   const [userName, setUserName] = useState("Aarav S.");
+  const { t } = useLanguage();
 
   useEffect(() => {
     const user = localStorage.getItem("eco-user");
@@ -98,9 +101,9 @@ export default function DashboardPage() {
       {/* HERO */}
       <div className="hero animate-fade-up">
         <div className="hero-left">
-          <div className="hero-tag">Welcome back, {userName.split(' ')[0]} · Jaipur, Rajasthan · March 2026</div>
+          <div className="hero-tag">{t("welcome")} {userName.split(' ')[0]}</div>
           <div className="hero-title">
-            Your Eco<br /><span>Dashboard</span>
+            Your Eco<br /><span>{t("dashboard")}</span>
           </div>
           <div className="hero-sub">You're in the top 15% of users in Rajasthan 🎉</div>
         </div>

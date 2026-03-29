@@ -476,3 +476,30 @@
 .how-item b{color:var(--g);display:block;margin-bottom:2px;font-size:11px}
 @media(max-width:850px){#main{grid-template-columns:108px 1fr}#rp{display:none}}
 @media(max-width:560px){#main{grid-template-columns:1fr}#lp{display:none}}
+
+/* --- Mobile Menu Styles --- */
+.mobile-toggle-btn {
+  background: none; border: none; font-size: 1.4rem; color: var(--green); cursor: pointer; display: none; line-height: 1; padding: 4px;
+}
+@media(max-width: 1280px) {
+  .mobile-toggle-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-left: 8px;}
+}
+.mobile-menu {
+  display: flex; flex-direction: column; background: var(--bg2); border-bottom: 1px solid var(--border); overflow: hidden; max-height: 0; transition: max-height 0.3s ease-out;
+}
+.mobile-menu.open {
+  max-height: 400px;
+}
+.mobile-nl {
+  padding: 14px 24px; color: var(--text2); text-decoration: none; font-size: 0.9rem; font-weight: 600; border-bottom: 1px solid rgba(74,200,80,0.06); transition: all 0.2s;
+}
+.mobile-nl:last-child {
+  border-bottom: none;
+}
+.mobile-nl:hover {
+  background: rgba(74,200,80,0.04); color: var(--text); padding-left: 28px;
+}
+.mobile-nl.active {
+  color: var(--green); background: rgba(74,200,80,0.08); border-left: 3px solid var(--green); padding-left: 25px;
+}
+
