@@ -169,12 +169,13 @@ export default function EcoGuardianPage() {
       if(!G.paused) { lastTime = performance.now(); raf = requestAnimationFrame(loop); }
     };
 
-    const sel = (window as any).sel = (i: number) => {
+    function sel(i: number) {
       G.sel = i;
       document.querySelectorAll('.wc').forEach((b, j) => b.classList.toggle('sel', j === i));
-    };
+    }
+    (window as any).sel = sel;
 
-    const nextWave = (window as any).nextWave = () => {
+    function nextWave() {
       if(!G.running || G.paused) return; // Prevent next wave if game not active
       G.wave++;
       const wv = document.getElementById('wv');
@@ -209,7 +210,8 @@ export default function EcoGuardianPage() {
           }
         }, i*500 + Math.random()*200);
       }
-    };
+    }
+    (window as any).nextWave = nextWave;
 
     const onCanvasClick = (e: MouseEvent | PointerEvent | TouchEvent) => {
       if(!G.running || G.paused) return;

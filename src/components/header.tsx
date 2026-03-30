@@ -34,17 +34,7 @@ export function Header() {
             <div className="logo-box">🌿</div>{t("appName")}
           </Link>
           
-          <div className="nav-links hidden xl:flex">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`nl ${pathname === link.href ? "active" : ""}`}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+
 
           <div className="nav-r">
             <select 
@@ -69,7 +59,7 @@ export function Header() {
             
             {/* Mobile Hamburger Button */}
             <button 
-              className="xl:hidden mobile-toggle-btn"
+              className="mobile-toggle-btn"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
@@ -80,7 +70,7 @@ export function Header() {
       </nav>
 
       {/* Mobile Menu Dropdown */}
-      <div className={`mobile-menu ${menuOpen ? 'open' : ''} xl:hidden`}>
+      <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
         {links.map((link) => (
           <Link
             key={link.href}
