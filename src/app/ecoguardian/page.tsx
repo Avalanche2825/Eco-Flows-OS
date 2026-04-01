@@ -18,12 +18,14 @@ export default function EcoGuardianPage() {
     function resize(){
       const r = cw_el!.getBoundingClientRect();
       canvas.width = Math.max(r.width||500,300);
-      canvas.height = 530;
-      cw_el!.style.height = '530px';
+      const isMobile = window.innerWidth <= 768;
+      const targetH = isMobile ? Math.min(window.innerHeight * 0.6, 530) : 530;
+      canvas.height = targetH;
+      cw_el!.style.height = targetH + 'px';
     }
     resize();
     
-    const onResize = () => { resize(); if(G.running) drawBG(); };
+    const onResize = () => { resize(); updateLanes(); if(G.running) drawBG(); };
     window.addEventListener('resize', onResize);
 
     // ── TIME LIMIT ──
@@ -77,8 +79,8 @@ export default function EcoGuardianPage() {
           st.style.color = remaining > 600 ? 'var(--g)' : remaining > 300 ? 'var(--a)' : 'var(--c)';
         }
         if(remaining <= 0) { timeUp(); }
-        if(remaining === 300) showToast('Only 5 minutes of playtime left today!');
-        if(remaining === 60) showToast('1 minute left! Finish strong!');
+        if(remaining === 300) showToast(t('fiveMinsLeft', 'Only 5 minutes of playtime left today!'));
+        if(remaining === 60) showToast(t('oneMinLeft', '1 minute left! Finish strong!'));
       }, 1000);
     }
 
@@ -102,32 +104,37 @@ export default function EcoGuardianPage() {
 
     // ── WEAPONS ──
     const WEAPONS = [
-      {nm:'Solar Beam',em:'☀️',ic:'☀',cost:30,col:'#f5a623',range:95,fr:1100,dmg:22,type:'solar'},
-      {nm:'Wind Turret',em:'🌀',ic:'⊕',cost:40,col:'#4a9eff',range:118,fr:720,dmg:14,type:'wind'},
-      {nm:'Tree Wall',em:'🌳',ic:'T',cost:20,col:'#4ac850',range:78,fr:1900,dmg:10,type:'tree'},
-      {nm:'Eco Bomb',em:'⚡',ic:'★',cost:60,col:'#ff6b6b',range:138,fr:2800,dmg:60,type:'bomb'},
-      {nm:'Rain Cloud',em:'🌧️',ic:'≈',cost:50,col:'#26d4b4',range:128,fr:1400,dmg:7,type:'rain'},
-      {nm:'Tidal Pulse',em:'🌊',ic:'~',cost:70,col:'#a78bfa',range:112,fr:2000,dmg:32,type:'tidal'},
-      {nm:'Magnet Vortex',em:'🧲',ic:'M',cost:55,col:'#f472b6',range:100,fr:1600,dmg:18,type:'magnet'},
-      {nm:'Bio Reactor',em:'🔬',ic:'B',cost:80,col:'#34d399',range:90,fr:2400,dmg:45,type:'bio'},
+      {nm:t('solarBeam','Solar Beam'),em:'☀️',ic:'☀',cost:30,col:'#f5a623',range:95,fr:1100,dmg:22,type:'solar'},
+      {nm:t('windTurret','Wind Turret'),em:'🌀',ic:'⊕',cost:40,col:'#4a9eff',range:118,fr:720,dmg:14,type:'wind'},
+      {nm:t('treeWall','Tree Wall'),em:'🌳',ic:'T',cost:20,col:'#4ac850',range:78,fr:1900,dmg:10,type:'tree'},
+      {nm:t('ecoBomb','Eco Bomb'),em:'⚡',ic:'★',cost:60,col:'#ff6b6b',range:138,fr:2800,dmg:60,type:'bomb'},
+      {nm:t('rainCloud','Rain Cloud'),em:'🌧️',ic:'≈',cost:50,col:'#26d4b4',range:128,fr:1400,dmg:7,type:'rain'},
+      {nm:t('tidalPulse','Tidal Pulse'),em:'🌊',ic:'~',cost:70,col:'#a78bfa',range:112,fr:2000,dmg:32,type:'tidal'},
+      {nm:t('magnetVortex','Magnet Vortex'),em:'🧲',ic:'M',cost:55,col:'#f472b6',range:100,fr:1600,dmg:18,type:'magnet'},
+      {nm:t('bioReactor','Bio Reactor'),em:'🔬',ic:'B',cost:80,col:'#34d399',range:90,fr:2400,dmg:45,type:'bio'},
     ];
 
     // ── ENEMIES ──
     const ETYPES = [
-      {nm:'Factory Smoke',ic:'S',col:'#888780',hp:60,spd:0.48,dmg:8,rew:12,sz:14},
-      {nm:'Plastic Waste',ic:'P',col:'#f5a623',hp:100,spd:0.34,dmg:15,rew:20,sz:15},
-      {nm:'CO2 Cloud',ic:'C',col:'#ff9a9a',hp:45,spd:0.74,dmg:5,rew:8,sz:13},
-      {nm:'Oil Spill',ic:'O',col:'#7a7870',hp:150,spd:0.24,dmg:25,rew:35,sz:17},
-      {nm:'Toxic Gas',ic:'X',col:'#a78bfa',hp:80,spd:0.54,dmg:12,rew:18,sz:14},
-      {nm:'Nuclear Waste',ic:'N',col:'#f472b6',hp:200,spd:0.22,dmg:30,rew:45,sz:18,boss:true},
-      {nm:'Acid Rain',ic:'A',col:'#34d399',hp:70,spd:0.62,dmg:10,rew:14,sz:13,splits:true},
-      {nm:'Desert Storm',ic:'D',col:'#fbbf24',hp:120,spd:0.42,dmg:18,rew:28,sz:16},
-      {nm:'Volcano Ash',ic:'V',col:'#f87171',hp:90,spd:0.50,dmg:14,rew:22,sz:15,burns:true},
-      {nm:'Microplastic',ic:'m',col:'#818cf8',hp:30,spd:0.90,dmg:3,rew:5,sz:10,swarm:true},
-      {nm:'BOSS Polluter',ic:'!',col:'#ff6363',hp:500,spd:0.18,dmg:40,rew:100,sz:22,boss:true,mega:true},
+      {nm:t('factorySmoke','Factory Smoke'),ic:'S',col:'#888780',hp:60,spd:0.48,dmg:8,rew:12,sz:14},
+      {nm:t('plasticWaste','Plastic Waste'),ic:'P',col:'#f5a623',hp:100,spd:0.34,dmg:15,rew:20,sz:15},
+      {nm:t('co2Cloud','CO2 Cloud'),ic:'C',col:'#ff9a9a',hp:45,spd:0.74,dmg:5,rew:8,sz:13},
+      {nm:t('oilSpill','Oil Spill'),ic:'O',col:'#7a7870',hp:150,spd:0.24,dmg:25,rew:35,sz:17},
+      {nm:t('toxicGas','Toxic Gas'),ic:'X',col:'#a78bfa',hp:80,spd:0.54,dmg:12,rew:18,sz:14},
+      {nm:t('nuclearWaste','Nuclear Waste'),ic:'N',col:'#f472b6',hp:200,spd:0.22,dmg:30,rew:45,sz:18,boss:true},
+      {nm:t('acidRain','Acid Rain'),ic:'A',col:'#34d399',hp:70,spd:0.62,dmg:10,rew:14,sz:13,splits:true},
+      {nm:t('desertStorm','Desert Storm'),ic:'D',col:'#fbbf24',hp:120,spd:0.42,dmg:18,rew:28,sz:16},
+      {nm:t('volcanoAsh','Volcano Ash'),ic:'V',col:'#f87171',hp:90,spd:0.50,dmg:14,rew:22,sz:15,burns:true},
+      {nm:t('microplastic','Microplastic'),ic:'m',col:'#818cf8',hp:30,spd:0.90,dmg:3,rew:5,sz:10,swarm:true},
+      {nm:t('bossPolluter','BOSS Polluter'),ic:'!',col:'#ff6363',hp:500,spd:0.18,dmg:40,rew:100,sz:22,boss:true,mega:true},
     ];
 
-    const LANES = [80,160,240,320,400,480];
+    let LANES = [80,160,240,320,400,480];
+    function updateLanes() {
+      const spacing = canvas.height / 7;
+      LANES = [1,2,3,4,5,6].map(i => Math.round(i * spacing));
+    }
+    updateLanes();
     const ECO_FACTS = [
       'Solar panels generate clean energy for 25+ years!',
       'A single tree absorbs ~48 lbs of CO2 annually.',
@@ -165,7 +172,7 @@ export default function EcoGuardianPage() {
       if(!G.running) return;
       G.paused = !G.paused;
       const pb = document.getElementById('pbtn');
-      if(pb) pb.textContent = G.paused ? 'Resume' : 'Pause';
+      if(pb) pb.textContent = G.paused ? t('resume','Resume') : t('pause','Pause');
       if(!G.paused) { lastTime = performance.now(); raf = requestAnimationFrame(loop); }
     };
 
@@ -183,7 +190,7 @@ export default function EcoGuardianPage() {
       const bonus = 20 + G.wave * 6;
       G.coins += bonus; G.earned += bonus;
       updateHUD();
-      showToast('Wave '+G.wave+' incoming! +'+bonus+' coins');
+      showToast(t('waveIncoming','Wave')+' '+G.wave+' '+t('incoming','incoming!')+' +'+bonus+' '+t('coins','coins'));
       const count = 4 + G.wave * 2;
       for(let i=0; i<count; i++){
         setTimeout(()=>{
@@ -220,19 +227,25 @@ export default function EcoGuardianPage() {
       const sx = canvas.width / rect.width, sy = canvas.height / rect.height;
       
       let clientX, clientY;
-      if ('touches' in e && (e as TouchEvent).touches.length > 0) {
-        clientX = (e as TouchEvent).touches[0].clientX;
-        clientY = (e as TouchEvent).touches[0].clientY;
+      if (e.type.startsWith('touch')) {
+        const te = e as TouchEvent;
+        if (te.touches && te.touches.length > 0) {
+          clientX = te.touches[0].clientX;
+          clientY = te.touches[0].clientY;
+        } else if (te.changedTouches && te.changedTouches.length > 0) {
+          clientX = te.changedTouches[0].clientX;
+          clientY = te.changedTouches[0].clientY;
+        } else return;
       } else {
-        clientX = (e as MouseEvent | PointerEvent).clientX;
-        clientY = (e as MouseEvent | PointerEvent).clientY;
+        clientX = (e as MouseEvent).clientX;
+        clientY = (e as MouseEvent).clientY;
       }
 
       const x = (clientX - rect.left) * sx, y = (clientY - rect.top) * sy;
       if(x < 55) return;
       const w = WEAPONS[G.sel];
-      if(G.coins < w.cost) { showToast('Need ' + w.cost + ' coins for ' + w.nm + '!'); return; }
-      if(towers.some(t => Math.hypot(t.x - x, t.y - y) < 38)) { showToast('Too close to another tower!'); return; }
+      if(G.coins < w.cost) { showToast(t('needCoins','Need') + ' ' + w.cost + ' ' + t('coinsFor','coins for') + ' ' + w.nm + '!'); return; }
+      if(towers.some(t => Math.hypot(t.x - x, t.y - y) < 38)) { showToast(t('tooClose','Too close to another tower!')); return; }
       towers.push({x, y, type: w.type, col: w.col, ic: w.ic, em: w.em, range: w.range, fr: w.fr, dmg: w.dmg, lastFire: 0, angle: 0, nm: w.nm, spin: 0});
       G.coins -= w.cost; G.spent += w.cost;
       burst(x, y, w.col, 12, 30);
@@ -474,7 +487,7 @@ export default function EcoGuardianPage() {
             const fact = ECO_FACTS[G.fact%ECO_FACTS.length]; G.fact++;
             const fEl = document.getElementById('fact-txt');
             if(fEl) fEl.textContent = fact;
-            setTimeout(() => { if(G.running) showToast('Wave cleared! Eco tip: '+fact); }, 400);
+          setTimeout(() => { if(G.running) showToast(t('waveCleared','Wave cleared! Eco tip: ') + fact); }, 400);
           }
         }
       }
@@ -520,11 +533,11 @@ export default function EcoGuardianPage() {
     function drawHUDCanvas(){
       if(!ctx) return;
       ctx.fillStyle = 'rgba(74,200,80,0.7)'; ctx.font = 'bold 9px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-      ctx.fillText('Towers: '+towers.length, 58, 8);
-      ctx.fillText('Threats: '+enemies.length, 58, 19);
+      ctx.fillText(t('towers','Towers')+': '+towers.length, 58, 8);
+      ctx.fillText(t('threats','Threats')+': '+enemies.length, 58, 19);
       if(enemies.length===0 && G.wave>0){
         ctx.fillStyle = 'rgba(74,200,80,0.3)'; ctx.font = 'bold 11px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('WAVE CLEARED — Click "Next Wave" to continue', canvas.width/2, canvas.height/2);
+        ctx.fillText(t('waveClearedHeader','WAVE CLEARED — Click "Next Wave" to continue'), canvas.width/2, canvas.height/2);
       }
     }
 
@@ -535,16 +548,16 @@ export default function EcoGuardianPage() {
         ov.style.display = 'flex';
         ov.innerHTML = `<div class="ov-box">
           <div class="ov-ico">${win?'🌍':'💀'}</div>
-          <div class="ov-title" style="color:${win?'var(--g)':'var(--c)'}">${win?'Earth Saved!':'Earth Polluted!'}</div>
-          <div class="ov-sub">${win?'You heroically defended Earth from all pollution!':"The pollution broke through Earth's defences. Every eco-action counts!"}</div>
+          <div class="ov-title" style="color:${win?'var(--g)':'var(--c)'}">${win?t('earthSaved','Earth Saved!'):t('earthPolluted','Earth Polluted!')}</div>
+          <div class="ov-sub">${win?t('earthSavedSub','You heroically defended Earth from all pollution!'):t('earthPollutedSub',"The pollution broke through Earth's defences. Every eco-action counts!")}</div>
           <div class="ov-stats">
-            <div class="os-r"><span class="os-l">Final Score</span><span class="os-v" style="color:var(--a)">${G.score}</span></div>
-            <div class="os-r"><span class="os-l">Waves Survived</span><span class="os-v" style="color:var(--t)">${G.wave}</span></div>
-            <div class="os-r"><span class="os-l">Enemies Defeated</span><span class="os-v" style="color:var(--c)">${G.kills}</span></div>
-            <div class="os-r"><span class="os-l">Towers Deployed</span><span class="os-v" style="color:var(--g)">${towers.length}</span></div>
-            <div class="os-r"><span class="os-l">Coins Earned</span><span class="os-v" style="color:var(--a)">${G.earned}</span></div>
+            <div class="os-r"><span class="os-l">${t('finalScore','Final Score')}</span><span class="os-v" style="color:var(--a)">${G.score}</span></div>
+            <div class="os-r"><span class="os-l">${t('wavesSurvived','Waves Survived')}</span><span class="os-v" style="color:var(--t)">${G.wave}</span></div>
+            <div class="os-r"><span class="os-l">${t('enemiesDefeated','Enemies Defeated')}</span><span class="os-v" style="color:var(--c)">${G.kills}</span></div>
+            <div class="os-r"><span class="os-l">${t('towersDeployed','Towers Deployed')}</span><span class="os-v" style="color:var(--g)">${towers.length}</span></div>
+            <div class="os-r"><span class="os-l">${t('coinsEarned','Coins Earned')}</span><span class="os-v" style="color:var(--a)">${G.earned}</span></div>
           </div>
-          <button class="go-btn" onclick="window.startGame()">🌱 Play Again</button>
+          <button class="go-btn" onclick="window.startGame()">🌱 ${t('playAgain','Play Again')}</button>
         </div>`;
       }
     }
@@ -563,7 +576,7 @@ export default function EcoGuardianPage() {
   }, []);
 
   return (
-    <div style={{ 
+    <div ref={containerRef} style={{ 
       padding: "16px", minHeight: "calc(100vh - 59px)", background: "var(--bg)", color: "var(--tx)", fontFamily: "'Space Grotesk', sans-serif",
       "--g": "#4ac850", "--t": "#26d4b4", "--a": "#f5a623", "--c": "#ff6b6b", "--b": "#4a9eff", "--p": "#a78bfa", "--pk": "#f472b6",
       "--bg": "#060e06", "--bg2": "#0a140a", "--bg3": "#0f1a0f", "--bg4": "#141f14",
@@ -575,38 +588,38 @@ export default function EcoGuardianPage() {
         <div id="time-gate">
           <div className="tg-box">
             <div className="tg-icon">⏰</div>
-            <div className="tg-title">Daily Limit Reached!</div>
-            <div className="tg-sub">You've played your <strong style={{color:"var(--a)"}}>1 hour daily limit</strong> of EcoGuardian.<br/>Come back tomorrow to continue defending Earth from pollution!</div>
-            <div style={{fontSize:"12px",color:"var(--tx2)",marginBottom:"6px"}}>Resets in</div>
+            <div className="tg-title">{t('dailyLimitReached','Daily Limit Reached!')}</div>
+            <div className="tg-sub">{t('timeLimitMsgLine1',"You've played your")} <strong style={{color:"var(--a)"}}>{t('timeLimitHour','1 hour daily limit')}</strong> {t('timeLimitMsgLine2','of EcoGuardian.')}<br/>{t('timeLimitComeBack','Come back tomorrow to continue defending Earth from pollution!')}</div>
+            <div style={{fontSize:"12px",color:"var(--tx2)",marginBottom:"6px"}}>{t('resetsIn','Resets in')}</div>
             <div className="tg-timer" id="tg-countdown">00:00:00</div>
-            <div style={{fontSize:"11px",color:"var(--tx2)",marginTop:"6px"}}>Healthy gaming = healthy planet 🌍</div>
-            <div className="tg-reset" onClick={() => (window as any).devReset()}>Dev: reset timer</div>
+            <div style={{fontSize:"11px",color:"var(--tx2)",marginTop:"6px"}}>{t('healthyGaming','Healthy gaming = healthy planet')} 🌍</div>
+            <div className="tg-reset" onClick={() => (window as any).devReset()}>{t('devResetTimer','Dev: reset timer')}</div>
           </div>
         </div>
 
         {/* SESSION TIMER */}
         <div id="session-bar">
-          <span className="ses-label">Today's playtime</span>
+          <span className="ses-label">{t('todaysPlaytime',"Today's playtime")}</span>
           <div id="ses-bar"><div id="ses-fill" style={{width: "0%"}}></div></div>
           <span id="ses-time">60:00</span>
-          <span className="ses-limit">/ 60 min</span>
+          <span className="ses-limit">/ 60 {t('min','min')}</span>
         </div>
 
         {/* TOPBAR */}
         <div id="topbar">
-          <div className="logo"><div className="logo-box">🌿</div>EcoGuardian</div>
+          <div className="logo"><div className="logo-box">🌿</div>{t('ecoGuardian','EcoGuardian')}</div>
           <div id="earth-wrap">
-            <span style={{fontSize:"9px",color:"var(--tx3)",fontWeight:700,textTransform:"uppercase",letterSpacing:".5px"}}>Earth</span>
+            <span style={{fontSize:"9px",color:"var(--tx3)",fontWeight:700,textTransform:"uppercase",letterSpacing:".5px"}}>{t('earth','Earth')}</span>
             <div id="earth-bar"><div id="earth-fill" style={{ width: "100%", background: "linear-gradient(90deg, #4ac850, #26d4b4)" }}></div></div>
             <div id="hp-n" style={{ color: "#4ac850" }}>100</div>
           </div>
-          <div className="hud"><div className="hud-lbl">Coins</div><div className="hud-v" id="cv" style={{color:"var(--a)"}}>80</div></div>
-          <div className="hud"><div className="hud-lbl">Wave</div><div className="hud-v" id="wv" style={{color:"var(--t)"}}>0</div></div>
-          <div className="hud"><div className="hud-lbl">Score</div><div className="hud-v" id="sv" style={{color:"var(--g)"}}>0</div></div>
-          <div className="hud"><div className="hud-lbl">Kills</div><div className="hud-v" id="kv" style={{color:"var(--c)"}}>0</div></div>
+          <div className="hud"><div className="hud-lbl">{t('coins','Coins')}</div><div className="hud-v" id="cv" style={{color:"var(--a)"}}>80</div></div>
+          <div className="hud"><div className="hud-lbl">{t('wave','Wave')}</div><div className="hud-v" id="wv" style={{color:"var(--t)"}}>0</div></div>
+          <div className="hud"><div className="hud-lbl">{t('score','Score')}</div><div className="hud-v" id="sv" style={{color:"var(--g)"}}>0</div></div>
+          <div className="hud"><div className="hud-lbl">{t('kills','Kills')}</div><div className="hud-v" id="kv" style={{color:"var(--c)"}}>0</div></div>
           <div className="nav-btns">
-            <button className="nb" id="pbtn" onClick={() => (window as any).togglePause()}>Pause</button>
-            <button className="nb teal" onClick={() => (window as any).nextWave()}>Next Wave ›</button>
+            <button className="nb" id="pbtn" onClick={() => (window as any).togglePause()}>{t('pause','Pause')}</button>
+            <button className="nb teal" onClick={() => (window as any).nextWave()}>{t('nextWaveBtn','Next Wave ›')}</button>
           </div>
         </div>
 
@@ -618,58 +631,58 @@ export default function EcoGuardianPage() {
             <div className="wc sel" id="wb0" onClick={() => (window as any).sel(0)}>
               <div className="wc-dot" style={{background:"var(--a)"}}></div>
               <div className="wc-ico">☀️</div>
-              <div className="wc-nm">Solar Beam</div>
+              <div className="wc-nm">{t('solarBeam','Solar Beam')}</div>
               <div className="wc-cost">💰 30</div>
-              <div className="wc-stat">Burns smoke</div>
+              <div className="wc-stat">{t('solarBeamDesc','Burns smoke')}</div>
             </div>
             <div className="wc" id="wb1" onClick={() => (window as any).sel(1)}>
               <div className="wc-dot" style={{background:"var(--b)"}}></div>
               <div className="wc-ico">🌀</div>
-              <div className="wc-nm">Wind Turret</div>
+              <div className="wc-nm">{t('windTurret','Wind Turret')}</div>
               <div className="wc-cost">💰 40</div>
-              <div className="wc-stat">Rapid fire</div>
+              <div className="wc-stat">{t('windTurretDesc','Rapid fire')}</div>
             </div>
             <div className="wc" id="wb2" onClick={() => (window as any).sel(2)}>
               <div className="wc-dot" style={{background:"var(--g)"}}></div>
               <div className="wc-ico">🌳</div>
-              <div className="wc-nm">Tree Wall</div>
+              <div className="wc-nm">{t('treeWall','Tree Wall')}</div>
               <div className="wc-cost">💰 20</div>
-              <div className="wc-stat">CO2 absorber</div>
+              <div className="wc-stat">{t('treeWallDesc','CO2 absorber')}</div>
             </div>
             <div className="wc" id="wb3" onClick={() => (window as any).sel(3)}>
               <div className="wc-dot" style={{background:"var(--c)"}}></div>
               <div className="wc-ico">⚡</div>
-              <div className="wc-nm">Eco Bomb</div>
+              <div className="wc-nm">{t('ecoBomb','Eco Bomb')}</div>
               <div className="wc-cost">💰 60</div>
-              <div className="wc-stat">Area nuke</div>
+              <div className="wc-stat">{t('ecoBombDesc','Area nuke')}</div>
             </div>
             <div className="wc" id="wb4" onClick={() => (window as any).sel(4)}>
               <div className="wc-dot" style={{background:"var(--t)"}}></div>
               <div className="wc-ico">🌧️</div>
-              <div className="wc-nm">Rain Cloud</div>
+              <div className="wc-nm">{t('rainCloud','Rain Cloud')}</div>
               <div className="wc-cost">💰 50</div>
-              <div className="wc-stat">Slows all</div>
+              <div className="wc-stat">{t('rainCloudDesc','Slows all')}</div>
             </div>
             <div className="wc" id="wb5" onClick={() => (window as any).sel(5)}>
               <div className="wc-dot" style={{background:"var(--p)"}}></div>
               <div className="wc-ico">🌊</div>
-              <div className="wc-nm">Tidal Pulse</div>
+              <div className="wc-nm">{t('tidalPulse','Tidal Pulse')}</div>
               <div className="wc-cost">💰 70</div>
-              <div className="wc-stat">Chain strike</div>
+              <div className="wc-stat">{t('tidalPulseDesc','Chain strike')}</div>
             </div>
             <div className="wc" id="wb6" onClick={() => (window as any).sel(6)}>
               <div className="wc-dot" style={{background:"var(--pk)"}}></div>
               <div className="wc-ico">🧲</div>
-              <div className="wc-nm">Magnet Vortex</div>
+              <div className="wc-nm">{t('magnetVortex','Magnet Vortex')}</div>
               <div className="wc-cost">💰 55</div>
-              <div className="wc-stat">Pulls + stuns</div>
+              <div className="wc-stat">{t('magnetVortexDesc','Pulls + stuns')}</div>
             </div>
             <div className="wc" id="wb7" onClick={() => (window as any).sel(7)}>
               <div className="wc-dot" style={{background:"#34d399"}}></div>
               <div className="wc-ico">🔬</div>
-              <div className="wc-nm">Bio Reactor</div>
+              <div className="wc-nm">{t('bioReactor','Bio Reactor')}</div>
               <div className="wc-cost">💰 80</div>
-              <div className="wc-stat">Poison cloud</div>
+              <div className="wc-stat">{t('bioReactorDesc','Poison cloud')}</div>
             </div>
           </div>
 
@@ -681,15 +694,15 @@ export default function EcoGuardianPage() {
             <div id="ov">
               <div className="ov-box">
                 <div className="ov-ico">🌍</div>
-                <div className="ov-title" style={{color:"var(--g)"}}>EcoGuardian</div>
-                <div className="ov-sub">Defend Earth from 11 types of pollution threats! Deploy eco-weapons, chain combos, and survive endless waves.</div>
+                <div className="ov-title" style={{color:"var(--g)"}}>{t('ecoGuardian','EcoGuardian')}</div>
+                <div className="ov-sub">{t('ecoGuardianSub','Defend Earth from 11 types of pollution threats! Deploy eco-weapons, chain combos, and survive endless waves.')}</div>
                 <div className="how-grid">
-                  <div className="how-item"><b style={{color:"var(--g)"}}>Deploy</b>Click a weapon left, then click the field to place it</div>
-                  <div className="how-item"><b style={{color:"var(--g)"}}>Earn Coins</b>Kill enemies to earn coins for more towers</div>
-                  <div className="how-item"><b style={{color:"var(--g)"}}>Protect Earth</b>Don't let enemies reach the left edge!</div>
-                  <div className="how-item"><b style={{color:"var(--g)"}}>Time Limit</b>Only 1 hour of play per day — use it wisely!</div>
+                  <div className="how-item"><b style={{color:"var(--g)"}}>{t('deploy','Deploy')}</b>{t('howToDeploy','Click a weapon left, then click the field to place it')}</div>
+                  <div className="how-item"><b style={{color:"var(--g)"}}>{t('earnCoinsBtn','Earn Coins')}</b>{t('howToEarn','Kill enemies to earn coins for more towers')}</div>
+                  <div className="how-item"><b style={{color:"var(--g)"}}>{t('protectEarth','Protect Earth')}</b>{t('howToProtect',"Don't let enemies reach the left edge!")}</div>
+                  <div className="how-item"><b style={{color:"var(--g)"}}>{t('timeLimit','Time Limit')}</b>{t('timeLimitHowTo','Only 1 hour of play per day — use it wisely!')}</div>
                 </div>
-                <button className="go-btn" onClick={() => (window as any).startGame()}>🌱 Start Defending!</button>
+                <button className="go-btn" onClick={() => (window as any).startGame()}>🌱 {t('startDefending','Start Defending!')}</button>
               </div>
             </div>
           </div>
@@ -697,28 +710,28 @@ export default function EcoGuardianPage() {
           {/* RIGHT PANEL */}
           <div id="rp">
             <div className="rbox">
-              <div className="rbox-t">Enemy Threats</div>
-              <div className="er"><div className="er-ic" style={{background:"#88878022",color:"#888780"}}>S</div><div><div className="er-nm">Factory Smoke</div><div className="er-st">60HP · slow</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#f5a62322",color:"#f5a623"}}>P</div><div><div className="er-nm">Plastic Waste</div><div className="er-st">100HP · med</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#ff9a9a22",color:"#ff9a9a"}}>C</div><div><div className="er-nm">CO2 Cloud</div><div className="er-st">45HP · fast</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#7a787022",color:"#aaa"}}>O</div><div><div className="er-nm">Oil Spill</div><div className="er-st">150HP · tank</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#a78bfa22",color:"#a78bfa"}}>X</div><div><div className="er-nm">Toxic Gas</div><div className="er-st">80HP · med</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#f472b622",color:"#f472b6"}}>N</div><div><div className="er-nm">Nuclear Waste</div><div className="er-st">200HP · boss</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#34d39922",color:"#34d399"}}>A</div><div><div className="er-nm">Acid Rain</div><div className="er-st">70HP · splits</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#fbbf2422",color:"#fbbf24"}}>D</div><div><div className="er-nm">Desert Storm</div><div className="er-st">120HP · blind</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#f8717122",color:"#f87171"}}>V</div><div><div className="er-nm">Volcano Ash</div><div className="er-st">90HP · burns</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#818cf822",color:"#818cf8"}}>m</div><div><div className="er-nm">Microplastic</div><div className="er-st">30HP · swarm</div></div></div>
-              <div className="er"><div className="er-ic" style={{background:"#ff636322",color:"#ff6363"}}>!</div><div><div className="er-nm">BOSS Polluter</div><div className="er-st">500HP · mega</div></div></div>
+              <div className="rbox-t">{t('enemyThreats','Enemy Threats')}</div>
+              <div className="er"><div className="er-ic" style={{background:"#88878022",color:"#888780"}}>S</div><div><div className="er-nm">{t('factorySmoke','Factory Smoke')}</div><div className="er-st">60HP · {t('slow','slow')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#f5a62322",color:"#f5a623"}}>P</div><div><div className="er-nm">{t('plasticWaste','Plastic Waste')}</div><div className="er-st">100HP · {t('med','med')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#ff9a9a22",color:"#ff9a9a"}}>C</div><div><div className="er-nm">{t('co2Cloud','CO2 Cloud')}</div><div className="er-st">45HP · {t('fast','fast')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#7a787022",color:"#aaa"}}>O</div><div><div className="er-nm">{t('oilSpill','Oil Spill')}</div><div className="er-st">150HP · {t('tank','tank')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#a78bfa22",color:"#a78bfa"}}>X</div><div><div className="er-nm">{t('toxicGas','Toxic Gas')}</div><div className="er-st">80HP · {t('med','med')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#f472b622",color:"#f472b6"}}>N</div><div><div className="er-nm">{t('nuclearWaste','Nuclear Waste')}</div><div className="er-st">200HP · {t('boss','boss')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#34d39922",color:"#34d399"}}>A</div><div><div className="er-nm">{t('acidRain','Acid Rain')}</div><div className="er-st">70HP · {t('splits','splits')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#fbbf2422",color:"#fbbf24"}}>D</div><div><div className="er-nm">{t('desertStorm','Desert Storm')}</div><div className="er-st">120HP · {t('blind','blind')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#f8717122",color:"#f87171"}}>V</div><div><div className="er-nm">{t('volcanoAsh','Volcano Ash')}</div><div className="er-st">90HP · {t('burns','burns')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#818cf822",color:"#818cf8"}}>m</div><div><div className="er-nm">{t('microplastic','Microplastic')}</div><div className="er-st">30HP · {t('swarm','swarm')}</div></div></div>
+              <div className="er"><div className="er-ic" style={{background:"#ff636322",color:"#ff6363"}}>!</div><div><div className="er-nm">{t('bossPolluter','BOSS Polluter')}</div><div className="er-st">500HP · {t('mega','mega')}</div></div></div>
             </div>
             <div className="rbox">
-              <div className="rbox-t">Stats</div>
-              <div className="sr"><span className="sr-l">Towers</span><span className="sr-v" id="st-tw" style={{color:"var(--g)"}}>0</span></div>
-              <div className="sr"><span className="sr-l">Kills</span><span className="sr-v" id="st-kl" style={{color:"var(--c)"}}>0</span></div>
-              <div className="sr"><span className="sr-l">Spent</span><span className="sr-v" id="st-sp" style={{color:"var(--a)"}}>0</span></div>
-              <div className="sr"><span className="sr-l">Earned</span><span className="sr-v" id="st-er" style={{color:"var(--g)"}}>0</span></div>
+              <div className="rbox-t">{t('stats','Stats')}</div>
+              <div className="sr"><span className="sr-l">{t('towers','Towers')}</span><span className="sr-v" id="st-tw" style={{color:"var(--g)"}}>0</span></div>
+              <div className="sr"><span className="sr-l">{t('kills','Kills')}</span><span className="sr-v" id="st-kl" style={{color:"var(--c)"}}>0</span></div>
+              <div className="sr"><span className="sr-l">{t('spent','Spent')}</span><span className="sr-v" id="st-sp" style={{color:"var(--a)"}}>0</span></div>
+              <div className="sr"><span className="sr-l">{t('earned','Earned')}</span><span className="sr-v" id="st-er" style={{color:"var(--g)"}}>0</span></div>
             </div>
-            <div className="tip"><b>Tip:</b> Chain Tidal Pulse between clustered enemies for massive combo bonuses!</div>
-            <div className="tip" style={{background:"rgba(38,212,180,0.04)",borderColor:"rgba(38,212,180,0.15)"}}><b style={{color:"var(--t)"}}>Eco Fact:</b> <span id="fact-txt">Solar panels generate clean energy for 25+ years!</span></div>
+            <div className="tip"><b>{t('tip','Tip')}:</b> {t('tipTidalPulse','Chain Tidal Pulse between clustered enemies for massive combo bonuses!')}</div>
+            <div className="tip" style={{background:"rgba(38,212,180,0.04)",borderColor:"rgba(38,212,180,0.15)"}}><b style={{color:"var(--t)"}}>{t('ecoFact','Eco Fact')}:</b> <span id="fact-txt">{t('solarFact','Solar panels generate clean energy for 25+ years!')}</span></div>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import translations from "@/lib/translations.json";
 type LanguageContextType = {
   language: string;
   setLanguage: (lang: string) => void;
-  t: (key: string, defaultValue?: string) => string;
+  t: (key: string, variables?: Record<string, string | number>) => string;
   languages: typeof translations.languages;
 };
 
@@ -27,9 +27,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("eco-lang", lang);
   };
 
-  const t = (key: string, defaultValue?: string) => {
+  const t = (key: string, variables?: Record<string, string | number>) => {
     const langData = (translations as any)[language] || translations.en;
-    return langData[key] || (translations.en as any)[key] || defaultValue || key;
+    let text = langData[key] || (translations.en as any)[key] || key;
+
+    if (variables) {
+      Object.entries(variables).forEach(([k, v]) => {
+        text = text.replace(`{{${k}}}`, String(v));
+      });
+    }
+
+    return text;
   };
 
   return (
