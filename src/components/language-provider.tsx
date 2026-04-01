@@ -6,7 +6,7 @@ import translations from "@/lib/translations.json";
 type LanguageContextType = {
   language: string;
   setLanguage: (lang: string) => void;
-  t: (key: string, variables?: Record<string, string | number>) => string;
+  t: (key: string, defaultValueOrVariables?: string | Record<string, string | number>) => string;
   languages: typeof translations.languages;
 };
 
@@ -27,12 +27,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("eco-lang", lang);
   };
 
-  const t = (key: string, variables?: Record<string, string | number>) => {
+  const t = (key: string, defaultValueOrVariables?: string | Record<string, string | number>) => {
     const langData = (translations as any)[language] || translations.en;
-    let text = langData[key] || (translations.en as any)[key] || key;
+    let text = langData[key] || (translations.en as any)[key];
+    
+    // If key not found, check if a fallback string was provided
+    if (!text && typeof defaultValueOrVariables === 'string') {
+      text = defaultValueOrVariables;
+    }
+    
+    // Final fallback to the key itself
+    text = text || key;
 
-    if (variables) {
-      Object.entries(variables).forEach(([k, v]) => {
+    // Handle variables if provided as an object
+    if (defaultValueOrVariables && typeof defaultValueOrVariables === 'object') {
+      Object.entries(defaultValueOrVariables).forEach(([k, v]) => {
         text = text.replace(`{{${k}}}`, String(v));
       });
     }
