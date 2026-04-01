@@ -607,19 +607,23 @@ export default function EcoGuardianPage() {
 
         {/* TOPBAR */}
         <div id="topbar">
-          <div className="logo"><div className="logo-box">🌿</div>{t('ecoGuardian','EcoGuardian')}</div>
-          <div id="earth-wrap">
-            <span style={{fontSize:"9px",color:"var(--tx3)",fontWeight:700,textTransform:"uppercase",letterSpacing:".5px"}}>{t('earth','Earth')}</span>
-            <div id="earth-bar"><div id="earth-fill" style={{ width: "100%", background: "linear-gradient(90deg, #4ac850, #26d4b4)" }}></div></div>
-            <div id="hp-n" style={{ color: "#4ac850" }}>100</div>
+          <div className="flex items-center justify-between w-full lg:w-auto">
+            <div className="logo"><div className="logo-box">🌿</div><span className="hidden sm:inline">{t('ecoGuardian','EcoGuardian')}</span></div>
+            <div id="earth-wrap" className="!flex-1 lg:!flex-none lg:w-[200px] mx-4">
+              <div id="earth-bar"><div id="earth-fill" style={{ width: "100%", background: "linear-gradient(90deg, #4ac850, #26d4b4)" }}></div></div>
+              <div id="hp-n" className="ml-2">100</div>
+            </div>
+            <div className="nav-btns">
+              <button className="nb" id="pbtn" onClick={() => (window as any).togglePause()}>{t('pause','Pause')}</button>
+            </div>
           </div>
-          <div className="hud"><div className="hud-lbl">{t('coins','Coins')}</div><div className="hud-v" id="cv" style={{color:"var(--a)"}}>80</div></div>
-          <div className="hud"><div className="hud-lbl">{t('wave','Wave')}</div><div className="hud-v" id="wv" style={{color:"var(--t)"}}>0</div></div>
-          <div className="hud"><div className="hud-lbl">{t('score','Score')}</div><div className="hud-v" id="sv" style={{color:"var(--g)"}}>0</div></div>
-          <div className="hud"><div className="hud-lbl">{t('kills','Kills')}</div><div className="hud-v" id="kv" style={{color:"var(--c)"}}>0</div></div>
-          <div className="nav-btns">
-            <button className="nb" id="pbtn" onClick={() => (window as any).togglePause()}>{t('pause','Pause')}</button>
-            <button className="nb teal" onClick={() => (window as any).nextWave()}>{t('nextWaveBtn','Next Wave ›')}</button>
+
+          <div className="flex items-center gap-3 overflow-x-auto py-1 no-scrollbar w-full lg:w-auto mt-2 lg:mt-0">
+            <div className="hud"><div className="hud-lbl">{t('coins','Coins')}</div><div className="hud-v" id="cv">80</div></div>
+            <div className="hud"><div className="hud-lbl">{t('wave','Wave')}</div><div className="hud-v" id="wv">0</div></div>
+            <div className="hud"><div className="hud-lbl">{t('score','Score')}</div><div className="hud-v" id="sv">0</div></div>
+            <div className="hud"><div className="hud-lbl">{t('kills','Kills')}</div><div className="hud-v" id="kv">0</div></div>
+            <button className="nb teal ml-auto lg:ml-0" onClick={() => (window as any).nextWave()}>{t('nextWaveBtn','Next ›')}</button>
           </div>
         </div>
 

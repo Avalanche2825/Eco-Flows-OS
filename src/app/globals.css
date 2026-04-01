@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 @import "tailwindcss/preflight";
 
-/* ─── Premium Fonts ─────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+/* ─── Premium Fonts (Moved to top) ──────────────────────────── */
 
 /* ─── Root theme tokens ─────────────────── */
 @layer base {
@@ -92,12 +92,19 @@
 .btn-sm { background: var(--green); color: #0a0e0a; border: none; border-radius: 8px; padding: 6px 14px; font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
 
 /* Layout */
-.page-container { max-width: 1300px; margin: 0 auto; padding: 40px 2rem 3rem; position: relative; z-index: 1; }
+.page-container { max-width: 1300px; margin: 0 auto; padding: 25px 1.25rem 3rem; position: relative; z-index: 1; }
+@media(max-width: 640px) {
+  .page-container { padding: 15px 1rem 3rem; }
+}
 
 /* Dashboard Specific Classes */
 .hero { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; gap: 2rem; }
 .hero-tag { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; margin-bottom: 8px; }
 .hero-title { font-size: 2.6rem; font-weight: 700; letter-spacing: -1px; line-height: 1.05; }
+@media(max-width: 768px) {
+  .hero-title { font-size: 1.85rem; line-height: 1.1; }
+  .hero { gap: 1rem; margin-bottom: 1.5rem; }
+}
 .hero-title span { color: var(--green); }
 .hero-sub { color: var(--text2); margin-top: 8px; font-size: 0.9rem; }
 .score-ring-wrap { position: relative; width: 170px; height: 170px; flex-shrink: 0; }
@@ -145,7 +152,21 @@
 .lb-pts { font-size: 0.72rem; font-family: var(--font-mono); color: var(--text2); }
 
 @media(max-width:1100px) { .main-grid { grid-template-columns: 1fr; } .bottom-grid { grid-template-columns: 1fr 1fr; } }
-@media(max-width:800px) { .stats-grid { grid-template-columns: 1fr 1fr; } .hero { flex-direction: column; align-items: flex-start; } .bottom-grid { grid-template-columns: 1fr; } .hero-right { flex-direction: column; } }
+@media(max-width:800px) { 
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; } 
+  .hero { flex-direction: column; align-items: flex-start; } 
+  .bottom-grid { grid-template-columns: 1fr; gap: 12px; } 
+  .hero-right { width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; }
+  .score-meta { flex: 1; }
+  .score-ring-wrap { width: 130px; height: 130px; }
+  .score-ring-wrap canvas { width: 130px !important; height: 130px !important; }
+  .score-num { font-size: 2.2rem; }
+}
+@media(max-width: 500px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .hero-right { flex-direction: column; }
+  .score-ring-wrap { order: -1; margin-bottom: 15px; }
+}
 
 /* ─── HydroSolar Specific Classes ────────────────────────────── */
 .page-header { margin-bottom: 2rem; }
@@ -198,6 +219,20 @@
 .live-card:hover { border-color: var(--border2); }
 .lv-label { font-size: 0.63rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 .lv-pip { width: 6px; height: 6px; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+
+/* ─── EcoBot / 3-Column Mobile Fixes ─────────────────────────── */
+.app-body { display: flex; width: 100%; border: 1px solid var(--border); background: var(--bg2); border-radius: var(--rl); overflow: hidden; }
+@media(max-width: 1024px) {
+  .app-body { flex-direction: column; height: auto !important; border: none; }
+  .left-panel, .right-panel { display: none; }
+  .chat-area { width: 100% !important; border: 1px solid var(--border); border-radius: var(--rl); height: 600px; }
+  .quick-btns { overflow-x: auto; white-space: nowrap; padding-bottom: 8px; justify-content: flex-start !important; }
+  .qb { flex-shrink: 0; }
+}
+
+.left-panel { width: 260px; background: var(--bg3); border-right: 1px solid var(--border); padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+.chat-area { flex: 1; display: flex; flex-direction: column; position: relative; background: var(--bg2); }
+.right-panel { width: 280px; background: var(--bg3); border-left: 1px solid var(--border); padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
 .lv-val { font-size: 2.2rem; font-weight: 700; font-family: var(--font-mono); line-height: 1; }
 .lv-unit { font-size: 0.8rem; color: var(--text2); margin-left: 3px; }
 .lv-sub { font-size: 0.68rem; color: var(--text2); margin-top: 6px; }
@@ -427,7 +462,15 @@
 .nb.teal{border-color:rgba(38,212,180,0.3);color:var(--t)}
 .nb.teal:hover{background:rgba(38,212,180,0.08)}
 #main{display:grid;grid-template-columns:128px 1fr 155px;min-height:530px;height:100%}
+@media(max-width: 1024px) {
+  #main { grid-template-columns: 1fr; height: auto; min-height: unset; }
+}
 #lp{background:var(--bg2);border-right:1px solid var(--bdr);padding:10px 7px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+@media(max-width: 600px) {
+  #lp { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--bdr); padding: 10px; }
+  .wc { min-width: 100px; flex-shrink: 0; }
+  .plbl { display: none; }
+}
 #lp::-webkit-scrollbar{width:2px}
 #lp::-webkit-scrollbar-thumb{background:var(--bg4)}
 .plbl{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:2px;padding:0 2px}
