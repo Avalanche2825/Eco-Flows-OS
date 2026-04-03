@@ -35,7 +35,7 @@ type Msg = { id: number, text: string, time: string, isBot: boolean, isTyping?: 
 
 export default function EcoBotPage() {
   const [msgs, setMsgs] = useState<Msg[]>([
-    { id: 1, text: "🌿 Hi Aarav! I'm EcoBot, your personal sustainability AI.\n\nYour eco score is 78/100 — top 15% in Rajasthan! 🎉\n\nI've analyzed your March 2026 data. You've saved 12,480L of water and generated 847 kWh solar this month.\n\nHow can I help you save more today?", time: now(), isBot: true }
+    { id: 1, text: "🌿 Hi Ronak! I'm EcoBot, your personal sustainability AI.\n\nYour eco score is 78/100 — top 15% in Rajasthan! 🎉\n\nI've analyzed your March 2026 data. You've saved 12,480L of water and generated 847 kWh solar this month.\n\nHow can I help you save more today?", time: now(), isBot: true }
   ]);
   const [inp, setInp] = useState("");
   const endRef = useRef<HTMLDivElement>(null);

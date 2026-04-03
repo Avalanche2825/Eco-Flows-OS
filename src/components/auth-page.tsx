@@ -396,12 +396,12 @@ export default function AuthPage({ initialTab = "login" }: { initialTab?: "login
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">First Name</label>
-                  <input type="text" className="form-input" placeholder="Aarav" 
+                  <input type="text" className="form-input" placeholder="Ronak" 
                     value={suFname} onChange={(e) => { setSuFname(e.target.value); clearMessages(); }} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Last Name</label>
-                  <input type="text" className="form-input" placeholder="Singh" 
+                  <input type="text" className="form-input" placeholder="Jain" 
                     value={suLname} onChange={(e) => { setSuLname(e.target.value); clearMessages(); }} />
                 </div>
               </div>

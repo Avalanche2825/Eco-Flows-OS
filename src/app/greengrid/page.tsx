@@ -18,7 +18,7 @@ const LBD = [
   { n: 'Suresh B.', p: 3640, av: 'SB', c: '#4a9eff' },
   { n: 'Meena P.', p: 3200, av: 'MP', c: '#a78bfa' },
   { n: 'Arun D.', p: 3050, av: 'AD', c: '#34d399' },
-  { n: 'Aarav S.', p: 2840, av: 'AS', c: '#4ac850', you: true },
+  { n: 'Ronak Jain', p: 2840, av: 'RJ', c: '#4ac850', you: true },
   { n: 'Kavita N.', p: 2600, av: 'KN', c: '#f472b6' },
   { n: 'Dev R.', p: 2400, av: 'DR', c: '#60a5fa' },
   { n: 'Pooja L.', p: 2100, av: 'PL', c: '#fbbf24' }
@@ -56,7 +56,7 @@ export default function GreenGridOptimizer() {
   const [chal, setChal] = useState(INITIAL_CHALLENGES);
   const [showCreateMo, setShowCreateMo] = useState(false);
   const [newC, setNewC] = useState("");
-  const [userName, setUserName] = useState("Aarav S.");
+  const [userName, setUserName] = useState("Ronak Jain");
 
   React.useEffect(() => {
     const user = localStorage.getItem("eco-user");

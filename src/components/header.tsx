@@ -8,7 +8,7 @@ import { useLanguage } from "@/components/language-provider";
 export function Header() {
   const pathname = usePathname();
   const { language, setLanguage, languages, t } = useLanguage();
-  const [userName, setUserName] = useState("Aarav S.");
+  const [userName, setUserName] = useState("Ronak Jain");
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {

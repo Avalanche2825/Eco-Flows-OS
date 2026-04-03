@@ -88,7 +88,7 @@ import { useLanguage } from "@/components/language-provider";
 
 export default function DashboardPage() {
   const [chartMode, setChartMode] = useState<"water" | "energy" | "solar">("water");
-  const [userName, setUserName] = useState("Aarav S.");
+  const [userName, setUserName] = useState("Ronak Jain");
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -405,7 +405,7 @@ export default function DashboardPage() {
           </div>
           <div className="lb-row" style={{ background: "rgba(74,200,80,0.06)", borderRadius: "8px", padding: "8px 10px", border: "1px solid rgba(74,200,80,0.18)" }}>
             <div className="lb-rank" style={{ color: "var(--green)" }}>#7</div>
-            <div className="lb-av" style={{ background: "rgba(74,200,80,0.2)", color: "var(--green)" }}>AS</div>
+            <div className="lb-av" style={{ background: "rgba(74,200,80,0.2)", color: "var(--green)" }}>RJ</div>
             <div className="lb-name">{userName} <span className="lb-you">You</span></div>
             <div className="lb-pts" style={{ color: "var(--green)" }}>2,840</div>
           </div>
